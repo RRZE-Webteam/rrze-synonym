@@ -4,7 +4,7 @@
  * Plugin Name:     Synonym
  * Plugin URI:      
  * Description:     WordPress-Plugin: Shortcode zur Einbindung von eigenen Synonymen sowie von Synonymen aus dem FAU-Netzwerk.
- * Version:         1.2.1
+ * Version:         1.2.2
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v2
