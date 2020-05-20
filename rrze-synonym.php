@@ -1,151 +1,150 @@
 <?php
 
+/*
+Plugin Name:     RRZE Synonym
+Plugin URI:      https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym
+Description:       
+Version:         2.0.0
+Author:          RRZE Webteam
+Author URI:      https://blogs.fau.de/webworking/
+License:         GNU General Public License v2
+License URI:     http://www.gnu.org/licenses/gpl-2.0.html
+Domain Path:     /languages
+Text Domain:     rrze-synonym
+*/
+
+namespace RRZE\Synonym;
+
+
+defined('ABSPATH') || exit;
+
+require_once 'config/config.php';
+use RRZE\Synonym\Main;
+
+$s = array(
+    '/^((http|https):\/\/)?(www.)+/i',
+    '/\//',
+    '/[^A-Za-z0-9\-]/'
+);
+$r = array(
+    '',
+    '-',
+    '-'
+);
+
+define( 'synonymlogFILE', plugin_dir_path( __FILE__) . 'rrze-synonym-' . preg_replace( $s, $r,  get_bloginfo( 'url' ) ) . '.log' );
+
+
+const RRZE_PHP_VERSION = '7.3';
+const RRZE_WP_VERSION = '5.2';
+const RRZE_PLUGIN_FILE = __FILE__;
+const RRZE_SCHEMA_START = '<div style="display:none" itemscope itemtype="https://schema.org/FAQPage">';
+const RRZE_SCHEMA_END = '</div>';
+const RRZE_SCHEMA_QUESTION_START = '<div style="display:none" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question"><div style="display:none" itemprop="name">';
+const RRZE_SCHEMA_QUESTION_END = '</div>';
+const RRZE_SCHEMA_ANSWER_START = '<div style="display:none" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><div style="display:none" itemprop="text">';
+const RRZE_SCHEMA_ANSWER_END = '</div></div></div>';
+
+
+
+// Automatische Laden von Klassen.
+spl_autoload_register(function ($class) {
+    $prefix = __NAMESPACE__;
+    $base_dir = __DIR__ . '/includes/';
+
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+
+    $relative_class = substr($class, $len);
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
+// Registriert die Plugin-Funktion, die bei Aktivierung des Plugins ausgeführt werden soll.
+register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
+// Registriert die Plugin-Funktion, die ausgeführt werden soll, wenn das Plugin deaktiviert wird.
+register_deactivation_hook(__FILE__, __NAMESPACE__ . '\deactivation');
+// Wird aufgerufen, sobald alle aktivierten Plugins geladen wurden.
+add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
+
 /**
- * Plugin Name:     Synonym
- * Plugin URI:      
- * Description:     WordPress-Plugin: Shortcode zur Einbindung von eigenen Synonymen sowie von Synonymen aus dem FAU-Netzwerk.
- * Version:         1.2.2
- * Author:          RRZE-Webteam
- * Author URI:      https://blogs.fau.de/webworking/
- * License:         GNU General Public License v2
- * License URI:     http://www.gnu.org/licenses/gpl-2.0.html
- * Domain Path:     /languages
- * Text Domain:     rrze-synonym-server
+ * Einbindung der Sprachdateien.
  */
-
-namespace RRZE\Synonym\Server;
-
-const RRZE_PHP_VERSION              = '7.0';
-const RRZE_WP_VERSION               = '4.9';
-    
-add_action('plugins_loaded', 'RRZE\Synonym\Server\init');
-add_action ('synonymhook', 'RRZE\Synonym\Server\updateUrlOption');
-register_activation_hook(__FILE__, 'RRZE\Synonym\Server\activation');
-
-
-function init() {
-    textdomain();
-    include_once('includes/posttype/server-posttype-synonym.php');
-    include_once('includes/posttype/server-metabox-synonym.php');
-    include_once('includes/posttype/server-admin-synonym.php');
-    include_once('includes/posttype/server-helper-synonym.php');
-    include_once('includes/synonym/server-class-synonym-helper.php');
-    include_once('includes/shortcode/server-shortcode-synonym.php');
-    new Class_Build_Synomym_Shortcode();
-    include_once('includes/REST-API/server-rest-synonym.php');
-    include_once('includes/synonym/server-class-synonym-list.php');
-    include_once('includes/domain/server-class-domain-add.php');
-    new AddServer();
-    include_once('includes/domain/server-class-domain-list.php');
-    include_once('includes/domain/server-class-domain-get.php');
-    new DomainWPListTable();
+function load_textdomain(){
+    load_plugin_textdomain('rrze-synonym', false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 }
 
-function textdomain() {
-    load_plugin_textdomain('rrze-synonym-server', FALSE, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
-}
-
-function activation() {
-    textdomain();
-    system_requirements();
-    synonymcron();
-    
-    $caps_synonym = get_caps('synonym');
-    add_caps('administrator', $caps_synonym);
-}
-
-function deactivation() {
-    wp_clear_scheduled_hook('synonymhook');
-    delete_option ('serversynonyms');
-    delete_option ('registerServer');
-    
-    $caps_synonym = get_caps('synonym');
-    remove_caps('administrator',  $caps_synonym);
-    flush_rewrite_rules();
-}
-
-function get_caps($cap_type) {
-    $caps = array(
-        "edit_" . $cap_type,
-        "read_" . $cap_type,
-        "delete_" . $cap_type,
-        "edit_" . $cap_type . "s",
-        "edit_others_" . $cap_type . "s",
-        "publish_" . $cap_type . "s",
-        "read_private_" . $cap_type . "s",
-        "delete_" . $cap_type . "s",
-        "delete_private_" . $cap_type . "s",
-        "delete_published_" . $cap_type . "s",
-        "delete_others_" . $cap_type . "s",
-        "edit_private_" . $cap_type . "s",
-        "edit_published_" . $cap_type . "s",                
-    );
-    
-    return $caps;
-}
-
-function add_caps($role, $caps) {
-    $role = get_role($role);
-    foreach($caps as $cap) {
-        $role->add_cap($cap);
-    }        
-}
-
-function remove_caps($role, $caps) {
-    $role = get_role($role);
-    foreach($caps as $cap) {
-        $role->remove_cap($cap);
-    }        
-}    
-
-
-function system_requirements() {
+/**
+ * Überprüft die minimal erforderliche PHP- u. WP-Version.
+ */
+function system_requirements(){
     $error = '';
-
     if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
-        $error = sprintf(__('Your server is running PHP version %s. Please upgrade at least to PHP version %s.', 'rrze-plugin-help'), PHP_VERSION, RRZE_PHP_VERSION);
+        /* Übersetzer: 1: aktuelle PHP-Version, 2: erforderliche PHP-Version */
+        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-synonym'), PHP_VERSION, RRZE_PHP_VERSION);
+    } elseif (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
+        /* Übersetzer: 1: aktuelle WP-Version, 2: erforderliche WP-Version */
+        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-synonym'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
     }
+    return $error;
+}
 
-    if (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
-        $error = sprintf(__('Your Wordpress version is %s. Please upgrade at least to Wordpress version %s.', 'rrze-plugin-help'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
-    }
+/**
+ * Wird durchgeführt, nachdem das Plugin aktiviert wurde.
+ */
+function activation() {
+    // Sprachdateien werden eingebunden.
+    load_textdomain();
 
+    // Überprüft die minimal erforderliche PHP- u. WP-Version.
     // Wenn die Überprüfung fehlschlägt, dann wird das Plugin automatisch deaktiviert.
-    if (!empty($error)) {
-        deactivate_plugins(plugin_basename(__FILE__), FALSE, TRUE);
+    if ($error = system_requirements()) {
+        deactivate_plugins(plugin_basename(__FILE__), false, true);
         wp_die($error);
     }
+
+    // Ab hier können die Funktionen hinzugefügt werden,
+    // die bei der Aktivierung des Plugins aufgerufen werden müssen.
+    // Bspw. wp_schedule_event, flush_rewrite_rules, etc.
 }
 
-function synonym_cron_schedules($schedules){
-    if(!isset($schedules["5min"])){
-        $schedules["5min"] = array(
-            'interval' => 5*60,
-            'display' => __('Once every 5 minutes'));
-    }
-    return $schedules;
+/**
+ * Wird durchgeführt, nachdem das Plugin deaktiviert wurde.
+ */
+function deactivation() {
+    // Hier können die Funktionen hinzugefügt werden, die
+    // bei der Deaktivierung des Plugins aufgerufen werden müssen.
+    // Bspw. delete_option, wp_clear_scheduled_hook, flush_rewrite_rules, etc.
+
+    // delete_option(Options::get_option_name());
+    wp_clear_scheduled_hook( 'rrze_synonym_auto_sync' );
 }
 
-add_filter('cron_schedules','RRZE\Synonym\Server\synonym_cron_schedules');
+/**
+ * Wird durchgeführt, nachdem das WP-Grundsystem hochgefahren
+ * und alle Plugins eingebunden wurden.
+ */
+function loaded() {
+    // Sprachdateien werden eingebunden.
+    load_textdomain();
 
-function synonymcron() {
-    if (!wp_next_scheduled( 'synonymhook' )) {
-      wp_schedule_event( time(), '5min', 'synonymhook' );
-    }
-}
-
-function updateUrlOption() {
-    
-    //delete_option('urls');
-    //getSynonymsForWPListTable
-    
-    $synonym_option = 'serversynonyms';
-    $syn = WplisttableHelper::getSynonymsForWPListTable();
-    
-    if( get_option($synonym_option) !== false) {
-        update_option($synonym_option, $syn);
+    // Überprüft die minimal erforderliche PHP- u. WP-Version.
+    if ($error = system_requirements()) {
+        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        $plugin_data = get_plugin_data(__FILE__);
+        $plugin_name = $plugin_data['Name'];
+        $tag = is_network_admin() ? 'network_admin_notices' : 'admin_notices';
+        add_action($tag, function () use ($plugin_name, $error) {
+            printf('<div class="notice notice-error"><p>%1$s: %2$s</p></div>', esc_html($plugin_name), esc_html($error));
+        });
     } else {
-        $autoload = 'no';
-        add_option ($synonym_option, $syn);
+        // Hauptklasse (Main) wird instanziiert.
+        $main = new Main(__FILE__);
+        $main->onLoaded();
     }
 }
