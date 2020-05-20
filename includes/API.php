@@ -59,175 +59,175 @@ class API {
         $this->deletesynonym( $shortname );
     }
 
-    protected function getTaxonomies( $url, $field, &$filter ){
-        $aRet = array();    
-        $url .= SYNONYM_ENDPOINT . '_' . $field;    
-        $slug = ( $filter ? '&slug=' . $filter : '' );
-        $page = 1;
+    // protected function getTaxonomies( $url, $field, &$filter ){
+    //     $aRet = array();    
+    //     $url .= SYNONYM_ENDPOINT . '_' . $field;    
+    //     $slug = ( $filter ? '&slug=' . $filter : '' );
+    //     $page = 1;
 
-        do {
-            $request = wp_remote_get( $url . '?page=' . $page . $slug );
-            $status_code = wp_remote_retrieve_response_code( $request );
-            if ( $status_code == 200 ){
-                $entries = json_decode( wp_remote_retrieve_body( $request ), true );
-                if ( !empty( $entries ) ){
-                    foreach( $entries as $entry ){
-                        if ( $entry['source'] == 'website' ){                            
-                            if ( $entry['children'] ) {
-                                foreach( $entry['children'] as $childname ){
-                                    $aRet[$entry['name']][$childname] = array();        
-                                }
-                            }else{
-                                $aRet[$entry['name']] = array();
-                            }
-                        }
-                    }
-                    foreach( $aRet as $name => $aChildren ){
-                        foreach ( $aChildren as $childname => $val ){
-                            if ( isset( $aRet[$childname] ) ){
-                                $aRet[$name][$childname] = $aRet[$childname];
-                            }
-                        }
-                    }
-                }
-            }
-            $page++;   
-        } while ( ( $status_code == 200 ) && ( !empty( $entries ) ) );
-        return $aRet;
-    }
-
-    
-    public function sortIt( &$arr ){
-        uasort( $arr, function($a, $b) {
-            return strtolower( $a ) <=> strtolower( $b );
-        } );
-    }
-    
-    public function deleteTaxonomies( $source, $field ){
-        $args = array(
-            'hide_empty' => FALSE,
-            'meta_query' => array(
-                array(
-                   'key'       => 'source',
-                   'value'     => $source,
-                   'compare'   => '='
-                )
-            ),
-            'taxonomy'  => 'synonym_' . $field,
-            'fields' => 'ids'
-            );
-        $terms = get_terms( $args );
-        foreach( $terms as $ID  ){
-            wp_delete_term( $ID, 'synonym_' . $field );
-        }
-    }
-
-
-    public function deleteCategories( $source ){
-        $this->deleteTaxonomies( $source, 'category');
-    }
-
-    public function deleteTags( $source ){
-        $this->deleteTaxonomies( $source, 'tag');
-    }
-
-    protected function setCategories( &$aCategories, &$shortname ){
-        $aTmp = $aCategories;
-        foreach ( $aTmp as $name => $aDetails ){
-            $term = term_exists( $name, 'synonym_category' );
-            if ( !$term ) {
-                $term = wp_insert_term( $name, 'synonym_category' );
-                update_term_meta( $term['term_id'], 'source', $shortname );    
-            }
-            foreach ( $aDetails as $childname => $tmp ) {
-                $childterm = term_exists( $childname, 'synonym_category' );
-                if ( !$childterm ) {
-                    $childterm = wp_insert_term( $childname, 'synonym_category', array( 'parent' => $term['term_id'] ) );
-                    update_term_meta( $childterm['term_id'], 'source', $shortname );    
-                }
-            }
-            if ( $aDetails ){
-                $aTmp = $aDetails;
-            }
-        }
-    }
+    //     do {
+    //         $request = wp_remote_get( $url . '?page=' . $page . $slug );
+    //         $status_code = wp_remote_retrieve_response_code( $request );
+    //         if ( $status_code == 200 ){
+    //             $entries = json_decode( wp_remote_retrieve_body( $request ), true );
+    //             if ( !empty( $entries ) ){
+    //                 foreach( $entries as $entry ){
+    //                     if ( $entry['source'] == 'website' ){                            
+    //                         if ( $entry['children'] ) {
+    //                             foreach( $entry['children'] as $childname ){
+    //                                 $aRet[$entry['name']][$childname] = array();        
+    //                             }
+    //                         }else{
+    //                             $aRet[$entry['name']] = array();
+    //                         }
+    //                     }
+    //                 }
+    //                 foreach( $aRet as $name => $aChildren ){
+    //                     foreach ( $aChildren as $childname => $val ){
+    //                         if ( isset( $aRet[$childname] ) ){
+    //                             $aRet[$name][$childname] = $aRet[$childname];
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         $page++;   
+    //     } while ( ( $status_code == 200 ) && ( !empty( $entries ) ) );
+    //     return $aRet;
+    // }
 
     
-    public function sortAllCats( &$cats, &$into ) {
-        foreach ($cats as $ID => $aDetails) {
-            $into[$ID]['slug'] = $aDetails['slug'];
-            $into[$ID]['name'] = $aDetails['name'];            
-            if ( $aDetails['parentID'] ) {
-                $parentID = $aDetails['parentID'];
-                $into[$parentID][$ID]['slug'] = $aDetails['slug'];
-                $into[$parentID][$ID]['name'] = $aDetails['name'];
-            }
-            unset( $cats[$parentID] );
-        }    
-        $this->sortAllCats( $cats, $into );
-    }
+    // public function sortIt( &$arr ){
+    //     uasort( $arr, function($a, $b) {
+    //         return strtolower( $a ) <=> strtolower( $b );
+    //     } );
+    // }
+    
+    // public function deleteTaxonomies( $source, $field ){
+    //     $args = array(
+    //         'hide_empty' => FALSE,
+    //         'meta_query' => array(
+    //             array(
+    //                'key'       => 'source',
+    //                'value'     => $source,
+    //                'compare'   => '='
+    //             )
+    //         ),
+    //         'taxonomy'  => 'synonym_' . $field,
+    //         'fields' => 'ids'
+    //         );
+    //     $terms = get_terms( $args );
+    //     foreach( $terms as $ID  ){
+    //         wp_delete_term( $ID, 'synonym_' . $field );
+    //     }
+    // }
 
 
-    public function sortCats(Array &$cats, Array &$into, $parentID = 0, $prefix = '' ) {
-        $prefix .= ( $parentID ? '-' : '' );
-        foreach ($cats as $i => $cat) {
-            if ( $cat->parent == $parentID ) {
-                $into[$cat->term_id] = $cat;                
-                unset( $cats[$i] );
-            }
-            $this->aAllCats[$cat->term_id]['parentID'] = $cat->parent;
-            $this->aAllCats[$cat->term_id]['slug'] = $cat->slug;
-            $this->aAllCats[$cat->term_id]['name'] = str_replace( '~', '&nbsp;', str_pad( ltrim( $prefix . ' ' . $cat->name ), 100, '~') );
-        }    
-        foreach ($into as $topCat) {
-            $topCat->children = array();
-            $this->sortCats($cats, $topCat->children, $topCat->term_id, $prefix );
-        }
-        if ( !$cats ){
-            foreach ( $this->aAllCats as $ID => $aDetails ){
-                if ( $aDetails['parentID'] ){
-                    $this->aAllCats[$aDetails['parentID']]['children'][$ID] = $this->aAllCats[$ID];
-                }
-            }
-        } 
-    }
+    // public function deleteCategories( $source ){
+    //     $this->deleteTaxonomies( $source, 'category');
+    // }
 
-    public function cleanCats(){
-        foreach ( $this->aAllCats as $ID => $aDetails ){
-            if ( $aDetails['parentID'] ){
-                unset( $this->aAllCats[$ID] );
-            }
-        }
-    }
+    // public function deleteTags( $source ){
+    //     $this->deleteTaxonomies( $source, 'tag');
+    // }
 
-    public function getSlugNameCats(&$cats, &$into ){
-        foreach ( $cats as $i => $cat ){
-            $into[$cat['slug']] = $cat['name'];
-            if ( isset( $cat['children'] ) ){
-                $this->getSlugNameCats($cat['children'], $into );
-            }
-            unset( $cats[$i] );
-        }
-    }
+    // protected function setCategories( &$aCategories, &$shortname ){
+    //     $aTmp = $aCategories;
+    //     foreach ( $aTmp as $name => $aDetails ){
+    //         $term = term_exists( $name, 'synonym_category' );
+    //         if ( !$term ) {
+    //             $term = wp_insert_term( $name, 'synonym_category' );
+    //             update_term_meta( $term['term_id'], 'source', $shortname );    
+    //         }
+    //         foreach ( $aDetails as $childname => $tmp ) {
+    //             $childterm = term_exists( $childname, 'synonym_category' );
+    //             if ( !$childterm ) {
+    //                 $childterm = wp_insert_term( $childname, 'synonym_category', array( 'parent' => $term['term_id'] ) );
+    //                 update_term_meta( $childterm['term_id'], 'source', $shortname );    
+    //             }
+    //         }
+    //         if ( $aDetails ){
+    //             $aTmp = $aDetails;
+    //         }
+    //     }
+    // }
 
-    public function getCategories( $url, $shortname, $categories = '' ){
-        $aRet = array();
-        $aCategories = $this->getTaxonomies( $url, 'category', $categories );
-        $this->setCategories( $aCategories, $shortname );
-        $categories = get_terms( array(
-            'taxonomy' => 'synonym_category',
-            'meta_query' => array( array(
-                'key' => 'source',
-                'value' => $shortname
-            ) ),
-            'hide_empty' => FALSE
-            ) );
-        $categoryHierarchy = array();
-        $this->sortCats($categories, $categoryHierarchy);
-        $this->cleanCats();
-        $this->getSlugNameCats( $this->aAllCats, $aRet );
-        return $aRet;
-    }
+    
+    // public function sortAllCats( &$cats, &$into ) {
+    //     foreach ($cats as $ID => $aDetails) {
+    //         $into[$ID]['slug'] = $aDetails['slug'];
+    //         $into[$ID]['name'] = $aDetails['name'];            
+    //         if ( $aDetails['parentID'] ) {
+    //             $parentID = $aDetails['parentID'];
+    //             $into[$parentID][$ID]['slug'] = $aDetails['slug'];
+    //             $into[$parentID][$ID]['name'] = $aDetails['name'];
+    //         }
+    //         unset( $cats[$parentID] );
+    //     }    
+    //     $this->sortAllCats( $cats, $into );
+    // }
+
+
+    // public function sortCats(Array &$cats, Array &$into, $parentID = 0, $prefix = '' ) {
+    //     $prefix .= ( $parentID ? '-' : '' );
+    //     foreach ($cats as $i => $cat) {
+    //         if ( $cat->parent == $parentID ) {
+    //             $into[$cat->term_id] = $cat;                
+    //             unset( $cats[$i] );
+    //         }
+    //         $this->aAllCats[$cat->term_id]['parentID'] = $cat->parent;
+    //         $this->aAllCats[$cat->term_id]['slug'] = $cat->slug;
+    //         $this->aAllCats[$cat->term_id]['name'] = str_replace( '~', '&nbsp;', str_pad( ltrim( $prefix . ' ' . $cat->name ), 100, '~') );
+    //     }    
+    //     foreach ($into as $topCat) {
+    //         $topCat->children = array();
+    //         $this->sortCats($cats, $topCat->children, $topCat->term_id, $prefix );
+    //     }
+    //     if ( !$cats ){
+    //         foreach ( $this->aAllCats as $ID => $aDetails ){
+    //             if ( $aDetails['parentID'] ){
+    //                 $this->aAllCats[$aDetails['parentID']]['children'][$ID] = $this->aAllCats[$ID];
+    //             }
+    //         }
+    //     } 
+    // }
+
+    // public function cleanCats(){
+    //     foreach ( $this->aAllCats as $ID => $aDetails ){
+    //         if ( $aDetails['parentID'] ){
+    //             unset( $this->aAllCats[$ID] );
+    //         }
+    //     }
+    // }
+
+    // public function getSlugNameCats(&$cats, &$into ){
+    //     foreach ( $cats as $i => $cat ){
+    //         $into[$cat['slug']] = $cat['name'];
+    //         if ( isset( $cat['children'] ) ){
+    //             $this->getSlugNameCats($cat['children'], $into );
+    //         }
+    //         unset( $cats[$i] );
+    //     }
+    // }
+
+    // public function getCategories( $url, $shortname, $categories = '' ){
+    //     $aRet = array();
+    //     $aCategories = $this->getTaxonomies( $url, 'category', $categories );
+    //     $this->setCategories( $aCategories, $shortname );
+    //     $categories = get_terms( array(
+    //         'taxonomy' => 'synonym_category',
+    //         'meta_query' => array( array(
+    //             'key' => 'source',
+    //             'value' => $shortname
+    //         ) ),
+    //         'hide_empty' => FALSE
+    //         ) );
+    //     $categoryHierarchy = array();
+    //     $this->sortCats($categories, $categoryHierarchy);
+    //     $this->cleanCats();
+    //     $this->getSlugNameCats( $this->aAllCats, $aRet );
+    //     return $aRet;
+    // }
 
 
     public function deleteSynonyms( $source ){
@@ -242,11 +242,11 @@ class API {
         return $iDel;
     }
 
-    protected function cleanContent( $txt ){
-        // returns content without info below '<!-- rrze-synonym -->'
-        $txt = substr( $txt, 0, strpos( $txt, '<!-- rrze-synonym -->' ));
-        return $txt;
-    }
+    // protected function cleanContent( $txt ){
+    //     // returns content without info below '<!-- rrze-synonym -->'
+    //     $txt = substr( $txt, 0, strpos( $txt, '<!-- rrze-synonym -->' ));
+    //     return $txt;
+    // }
 
     protected function absoluteUrl( $txt, $baseUrl ){
         // converts relative URLs to absolute ones
@@ -293,14 +293,16 @@ class API {
         return $txt;
       }
 
-    protected function getSynonyms( &$url, &$categories ){
-        $synonyms = array();
+    // protected function getSynonyms( &$url, &$categories ){
+    protected function getSynonyms( &$url ){
+            $synonyms = array();
         $aCategoryRelation = array();
-        $filter = '&filter[synonym_category]=' . $categories;
+        // $filter = '&filter[synonym_category]=' . $categories;
         $page = 1;
 
         do {
-            $request = wp_remote_get( $url . SYNONYM_ENDPOINT . '?page=' . $page . $filter );
+            // $request = wp_remote_get( $url . SYNONYM_ENDPOINT . '?page=' . $page . $filter );
+            $request = wp_remote_get( $url . SYNONYM_ENDPOINT . '?page=' . $page );
             $status_code = wp_remote_retrieve_response_code( $request );
             if ( $status_code == 200 ){
                 $entries = json_decode( wp_remote_retrieve_body( $request ), true );
@@ -311,7 +313,8 @@ class API {
                     foreach( $entries as $entry ){
                         if ( $entry['source'] == 'website' ){
                             // $content = substr( $entry['content']['rendered'], 0, strpos( $entry['content']['rendered'], '<!-- rrze-synonym -->' ));
-                            $content = $this->cleanContent( $entry['content']['rendered'] );
+                            // $content = $this->cleanContent( $entry['content']['rendered'] );
+                            $content = $entry['content']['rendered'];
                             $content = $this->absoluteUrl( $content, $url );
 
                             $synonyms[$entry['id']] = array(
@@ -319,15 +322,15 @@ class API {
                                 'title' => $entry['title']['rendered'],
                                 'content' => $content,
                                 'lang' => $entry['lang'],
-                                'synonym_category' => $entry['synonym_category'],
+                                // 'synonym_category' => $entry['synonym_category'],
                                 'remoteID' => $entry['remoteID'],
                                 'remoteChanged' => $entry['remoteChanged']
                             );
-                            $sTag = '';
-                            foreach ( $entry['synonym_tag'] as $tag ){
-                                $sTag .= $tag . ',';
-                            }
-                            $synonyms[$entry['id']]['synonym_tag'] = trim( $sTag, ',' );
+                            // $sTag = '';
+                            // foreach ( $entry['synonym_tag'] as $tag ){
+                            //     $sTag .= $tag . ',';
+                            // }
+                            // $synonyms[$entry['id']]['synonym_tag'] = trim( $sTag, ',' );
                             $synonyms[$entry['id']]['URLhasSlider'] = ( ( strpos( $content, 'slider') !== false ) ? $entry['link'] : FALSE ); // we cannot handle sliders, see note in Shortcode.php shortcodeOutput()
                         }
                     }
@@ -339,20 +342,20 @@ class API {
         return $synonyms;
     }
 
-    public function setTags( $terms, $shortname ){
-        if ( $terms ){
-            $aTerms = explode( ',', $terms );
-            foreach( $aTerms as $name ){
-                if ( $name ){
-                    $term = term_exists( $name, 'synonym_tag' );
-                    if ( !$term ) {
-                        $term = wp_insert_term( $name, 'synonym_tag' );
-                        update_term_meta( $term['term_id'], 'source', $shortname );    
-                    }
-                }
-            }
-        }
-    }
+    // public function setTags( $terms, $shortname ){
+    //     if ( $terms ){
+    //         $aTerms = explode( ',', $terms );
+    //         foreach( $aTerms as $name ){
+    //             if ( $name ){
+    //                 $term = term_exists( $name, 'synonym_tag' );
+    //                 if ( !$term ) {
+    //                     $term = wp_insert_term( $name, 'synonym_tag' );
+    //                     update_term_meta( $term['term_id'], 'source', $shortname );    
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     public function getSynonymsRemoteIDs( $source ){
         $aRet = array();
@@ -382,17 +385,18 @@ class API {
         // $this->getCategories( $url, $shortname );
 
         // get all synonyms
-        $aFaq = $this->getSynonyms( $url, $categories );
+        // $aFaq = $this->getSynonyms( $url, $categories );
+        $aFaq = $this->getSynonyms( $url );
         
         // set synonyms
         foreach ( $aFaq as $synonym ){
-            $this->setTags( $synonym['synonym_tag'], $shortname );
+            // $this->setTags( $synonym['synonym_tag'], $shortname );
 
-            $aCategoryIDs = array();
-            foreach ( $synonym['synonym_category'] as $name ){
-                $term = get_term_by( 'name', $name, 'synonym_category' );
-                $aCategoryIDs[] = $term->term_id;
-            }
+            // $aCategoryIDs = array();
+            // foreach ( $synonym['synonym_category'] as $name ){
+            //     $term = get_term_by( 'name', $name, 'synonym_category' );
+            //     $aCategoryIDs[] = $term->term_id;
+            // }
 
             if ( $synonym['URLhasSlider'] ) {
                 $aURLhasSlider[] = $synonym['URLhasSlider'];
@@ -410,10 +414,10 @@ class API {
                                 'lang' => $synonym['lang'],
                                 'remoteID' => $synonym['remoteID']
                                 ),
-                            'tax_input' => array(
-                                'synonym_category' => $aCategoryIDs,
-                                'synonym_tag' => $synonym['synonym_tag']
-                                )
+                            // 'tax_input' => array(
+                            //     'synonym_category' => $aCategoryIDs,
+                            //     'synonym_tag' => $synonym['synonym_tag']
+                            //     )
                             ) ); 
                         $iUpdated++;
                     }
@@ -434,10 +438,10 @@ class API {
                             'remoteID' => $synonym['id'],
                             'remoteChanged' => $synonym['remoteChanged']
                             ),
-                        'tax_input' => array(
-                            'synonym_category' => $aCategoryIDs,
-                            'synonym_tag' => $synonym['synonym_tag']
-                            )
+                        // 'tax_input' => array(
+                        //     'synonym_category' => $aCategoryIDs,
+                        //     'synonym_tag' => $synonym['synonym_tag']
+                        //     )
                         ) );
                     $iNew++;
                 }
