@@ -185,114 +185,24 @@ function getShortcodeSettings(){
             'show_block' => 'content',
 			'message' => __( 'Find the settings on the right side', 'rrze-synonym' )
 		],
-        // 'glossary' => [
-		// 	'values' => [
-		// 		'' => __( 'none', 'rrze-synonym' ),
-		// 		'category' => __( 'Categories', 'rrze-synonym' ),
-		// 		'tag' => __( 'Tags', 'rrze-synonym' )
-		// 	],
-		// 	'default' => '',
-		// 	'field_type' => 'select',
-		// 	'label' => __( 'Glossary content', 'rrze-synonym' ),
-		// 	'type' => 'string'
-		// ],
-        // 'glossarystyle' => [
-		// 	'values' => [
-		// 		'' => __( '-- hidden --', 'rrze-synonym' ),
-		// 		'a-z' => __( 'A - Z', 'rrze-synonym' ),
-		// 		'tagcloud' => __( 'Tagcloud', 'rrze-synonym' ),
-		// 		'tabs' => __( 'Tabs', 'rrze-synonym' )
-		// 	],
-		// 	'default' => 'a-z',
-		// 	'field_type' => 'select',
-		// 	'label' => __( 'Glossary style', 'rrze-synonym' ),
-		// 	'type' => 'string'
-		// ],
-		// 'category' => [
-		// 	'default' => '',
-		// 	'field_type' => 'text',
-		// 	'label' => __( 'Categories', 'rrze-synonym' ),
-		// 	'type' => 'text'
-        // ],
-		// 'tag' => [
-		// 	'default' => '',
-		// 	'field_type' => 'text',
-		// 	'label' => __( 'Tags', 'rrze-synonym' ),
-		// 	'type' => 'text'
-        // ],
-		// 'id' => [
-		// 	'default' => NULL,
-		// 	'field_type' => 'text',
-		// 	'label' => __( 'Synonyms', 'rrze-synonym' ),
-		// 	'type' => 'number'
-		// ],
-		// 'hide_accordeon' => [
-		// 	'field_type' => 'toggle',
-		// 	'label' => __( 'Hide accordeon', 'rrze-synonym' ),
-		// 	'type' => 'boolean',
-		// 	'default' => FALSE,
-		// 	'checked'   => FALSE
-		// ],	  
-		// 'hide_title' => [
-		// 	'field_type' => 'toggle',
-		// 	'label' => __( 'Hide title', 'rrze-synonym' ),
-		// 	'type' => 'boolean',
-		// 	'default' => FALSE,
-		// 	'checked'   => FALSE
-		// ],	  
-		// 'expand_all_link' => [
-		// 	'field_type' => 'toggle',
-		// 	'label' => __( 'Show "expand all" button', 'rrze-synonym' ),
-		// 	'type' => 'boolean',
-		// 	'default' => FALSE,
-		// 	'checked'   => FALSE
-		// ],	  
-		// 'load_open' => [
-		// 	'field_type' => 'toggle',
-		// 	'label' => __( 'Load website with opened accordeons', 'rrze-synonym' ),
-		// 	'type' => 'boolean',
-		// 	'default' => FALSE,
-		// 	'checked'   => FALSE
-		// ],	  
-		// 'color' => [
-		// 	'values' => [
-		// 		'med' => 'med',
-		// 		'nat' => 'nat',
-		// 		'rw' => 'rw',
-		// 		'phil' => 'phil',
-		// 		'tk' => 'tk'
-		// 	],
-		// 	'default' => 'tk',
-		// 	'field_type' => 'select',
-		// 	'label' => __( 'Color', 'rrze-synonym' ),
-		// 	'type' => 'string'
-		// ],
+		'slug' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'Tags', 'rrze-synonym' ),
+			'type' => 'text'
+        ],
+		'id' => [
+			'default' => NULL,
+			'field_type' => 'text',
+			'label' => __( 'Synonyms', 'rrze-synonym' ),
+			'type' => 'number'
+		],
 		// 'additional_class' => [
 		// 	'default' => '',
 		// 	'field_type' => 'text',
 		// 	'label' => __( 'Additonal CSS-class(es) for sourrounding DIV', 'rrze-synonym' ),
 		// 	'type' => 'text'
 		// ],
-        // 'sort' => [
-		// 	'values' => [
-		// 		'title' => __( 'Title', 'rrze-synonym' ),
-		// 		'id' => __( 'ID', 'rrze-synonym' )
-		// 	],
-		// 	'default' => 'title',
-		// 	'field_type' => 'select',
-		// 	'label' => __( 'Sort', 'rrze-synonym' ),
-		// 	'type' => 'string'
-		// ],
-        // 'order' => [
-		// 	'values' => [
-		// 		'ASC' => __( 'ASC', 'rrze-synonym' ),
-		// 		'DESC' => __( 'DESC', 'rrze-synonym' )
-		// 	],
-		// 	'default' => 'ASC',
-		// 	'field_type' => 'select',
-		// 	'label' => __( 'Order', 'rrze-synonym' ),
-		// 	'type' => 'string'
-		// ]				
     ];
 }
 
