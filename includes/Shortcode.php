@@ -46,6 +46,7 @@ class Shortcode {
 
     public function shortcodeOutput( $atts, $content = "", $shortcode_tag ) {
         $output = '';
+        $thisPost = FALSE;
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){
@@ -57,10 +58,11 @@ class Shortcode {
         extract( $atts );
 
         if ( $slug ){
-            $thisPost = getPostBySlug( $slug );
+            $thisPost = $this->getPostBySlug( $slug );
         } elseif( $id ) {
             $thisPost = get_post( $id );
         }
+
 
         if ( $thisPost ){
             switch( $shortcode_tag ){
@@ -75,7 +77,6 @@ class Shortcode {
                 // break;
             }    
         }
-
         return $output;
     }
 

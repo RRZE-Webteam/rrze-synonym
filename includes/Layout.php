@@ -24,6 +24,10 @@ class Layout {
         add_filter( 'manage_synonym_posts_columns', [$this, 'addColumns'] );        
         add_action( 'manage_synonym_posts_custom_column', [$this, 'getColumnsValues'], 10, 2 );
         add_filter( 'manage_edit-synonym_sortable_columns', [$this, 'addSortableColumns'] );
+
+        // save longform
+        add_action( 'save_post_synonym', [$this, 'saveLongform'] );        
+
     }
 
 
@@ -126,5 +130,13 @@ class Layout {
             echo $source;
         }
     }
+
+    public function saveLongform( $post_id ){
+        if ( ! current_user_can( 'edit_post', $post_id ) || ! isset( $_POST['longform'] ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ){
+            return $post_id;
+        }
+        update_post_meta( $post_id, 'longform', sanitize_text_field( $_POST['longform'] ) );        
+    }
+
 
 }
