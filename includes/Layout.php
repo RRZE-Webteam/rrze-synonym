@@ -104,13 +104,12 @@ class Layout {
                         $remoteID = get_post_meta( $post_id, "remoteID", TRUE );
                         $link = $domains[$source] . 'wp-admin/post.php?post=' . $remoteID . '&action=edit';
                         remove_post_type_support( 'synonym', 'title' );
-                        remove_post_type_support( 'synonym', 'editor' );
                         remove_meta_box( 'synonym_categorydiv', 'synonym', 'side' );
                         remove_meta_box( 'tagsdiv-synonym_tag', 'synonym', 'side' );
                         remove_meta_box( 'submitdiv', 'synonym', 'side' );            
                         add_meta_box(
                             'read_only_content_box', // id, used as the html id att
-                            __( 'This synonym cannot be edited because it is sychronized', 'rrze-synonym') . '. <a href="' . $link . '" target="_blank">' . __('You can edit it at the source', 'rrze-synonym') . '</a>',
+                            __( 'This synonym cannot be edited because it is synchronized', 'rrze-synonym') . '. <a href="' . $link . '" target="_blank">' . __('You can edit it at the source', 'rrze-synonym') . '</a>',
                             [$this, 'fillContentBox'], // callback function, spits out the content
                             'synonym', // post type or page. This adds to posts only
                             'normal', // context, where on the screen
@@ -127,6 +126,15 @@ class Layout {
                         'high' // priority, where should this go in the context
                     );        
                 }
+                remove_post_type_support( 'synonym', 'editor' );
+                add_meta_box(
+                    'longformbox', // id, used as the html id att
+                    __( 'Full form', 'rrze-faq'), // meta box title 
+                    [$this, 'longformBoxCallback'], // callback function, spits out the content
+                    'synonym', // post type or page. This adds to posts only
+                    'normal'
+                );    
+        
             }
         }
     }
@@ -143,6 +151,13 @@ class Layout {
         $columns['source'] = __( 'Source', 'rrze-synonym' );
         $columns['id'] = __( 'ID', 'rrze-synonym' );
         return $columns;
+    }
+
+    public function longformBoxCallback( $meta_id ) {
+        $sortfield = get_post_meta( $meta_id->ID, 'longform', TRUE );
+        $output = '<input type="text" name="longform" id="longform" class="longform" value="'. esc_attr($longform) .'">';
+        $output .= '<p class="description">' . __( 'Geben Sie hier die lange, ausgeschriebene Form des Synonyms ein. Mit diesem Text wird dann im späteren Gebrauch der verwendete Shortcode ersetzt.<br>Achtung: Umbrüche oder HTML-Anweisungen werden nicht übernommen.', 'rrze-faq' ) . '</p>';
+        echo $output;
     }
 
 

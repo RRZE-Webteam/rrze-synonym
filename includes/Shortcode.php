@@ -24,53 +24,59 @@ class Shortcode {
     public function __construct() {
         $this->settings = getShortcodeSettings();
         // add_action( 'init',  [$this, 'initGutenberg'] );
-        add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ], 10, 2 );
-        add_shortcode( 'static_content', [ $this, 'shortcodeOutput' ], 10, 2 ); // alternative shortcode
-        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ], 10, 2 ); // alternative shortcode
+        add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ] ); // liefert Langform (custom field) entweder nach slug oder id
+        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" Langform (custom field) "> title </abbr> nach slug oder id
+        // 'static_content' passt besser zu faq, da 'synonym' und 'fau_abbr' keinen content haben -> add_shortcode( 'static_content', [ $this, 'shortcodeOutput' ] ); // liefert content entweder nach slug oder id
     }
 
 
-    private function get_posts_by_urlslug( $the_slug ){
+    private function getPostBySlug( $slug ){
         $args = array(
-            'name'           => $the_slug,
+            'name'           => $slug,
             'post_type'      => 'synonym',
             'post_status'    => 'publish',
             'posts_per_page' => 1
         );
         return get_posts( $args );
     }
-     
 
-
-    // [static_content slug="" id=""] : Ausgabe des Synonyms ohne Titel entweder nach slug oder id
-    // [synonym slug="" id=""] : liefert die Langform entweder nach slug oder id
-    // [fau_abbr slug="fau" id=""] : liefert Langform mit den abbr-Tags nach slug oder id     
+    private function getLongform( $postID ){
+        return get_post_meta( $postID, 'longform', TRUE );
+    }
 
     public function shortcodeOutput( $atts, $content = "", $shortcode_tag ) {
-        $content = '';
-        if ( !$atts ){
-            $atts = array();
+        $output = '';
+        // merge given attributes with default ones
+        $atts_default = array();
+        foreach( $this->settings as $k => $v ){
+            if ( $k != 'block' ){
+                $atts_default[$k] = $v['default'];
+            }
         }
-
-        $atts = shortcode_atts( $atts_default, $atts );
-
+        $atts = shortcode_atts( $atts_default, $atts );        
         extract( $atts );
 
-        switch( $shortcode_tag ){
-            case 'static_content'  :
-                if ( $slug ){
-                    $thisPost = get_posts_by_urlslug( $slug );
-                } elseif( $id ) {
-                    $thisPost = get_post( $id );
-                }
-            break;
-            case 'synonym'  :
-            break;
-            case 'fau_abbr'  :
-            break;
+        if ( $slug ){
+            $thisPost = getPostBySlug( $slug );
+        } elseif( $id ) {
+            $thisPost = get_post( $id );
         }
 
-        return $content;
+        if ( $thisPost ){
+            switch( $shortcode_tag ){
+                case 'fau_abbr'  :
+                    $output = '<abbr title="' . $this->getLongform( $thisPost->ID ) . '">'. $thisPost->post_title . '</abbr>';
+                break;
+                case 'synonym'  :
+                    $output = $this->getLongform( $thisPost->ID );
+                break;
+                // case 'static_content'  :
+                //     $output = $thisPost->post_content;
+                // break;
+            }    
+        }
+
+        return $output;
     }
 
 
