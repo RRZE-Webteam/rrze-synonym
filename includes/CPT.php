@@ -42,7 +42,7 @@ class CPT {
                 'label'               => __( 'synonym', 'rrze-synonym' ),
                 'description'         => __( 'synonym informations', 'rrze-synonym' ),
                 'labels'              => $labels,
-                'supports'            => array( 'title', 'editor' ),
+                'supports'            => array( 'title' ),
                 'hierarchical'        => false,
                 'public'              => true,
                 'show_ui'             => true,
