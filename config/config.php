@@ -136,9 +136,9 @@ function getFields() {
 			[
 				'name' => 'info',
 				'label' => __('Info', 'rrze-synonym' ),
-				'desc' => __( 'All synonyms that match to the selected categories will be updated or inserted. Already synchronized synonyms that refer to categories which are not selected will be deleted. synonyms that have been deleted at the remote website will be deleted on this website, too.', 'rrze-synonym' ),
+				'desc' => __( 'All synonyms will be updated or inserted. Synonyms that have been deleted at the remote website will be deleted on this website, too.', 'rrze-synonym' ),
 				'type' => 'plaintext',
-				'default' => __( 'All synonyms that match to the selected categories will be updated or inserted. Already synchronized synonyms that refer to categories which are not selected will be deleted. Synonyms that have been deleted at the remote website will be deleted on this website, too.', 'rrze-synonym' ),
+				'default' => __( 'All synonyms will be updated or inserted. Synonyms that have been deleted at the remote website will be deleted on this website, too.', 'rrze-synonym' ),
 			],
 			[
 				'name' => 'autosync',
