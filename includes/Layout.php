@@ -27,7 +27,6 @@ class Layout {
 
         // save longform
         add_action( 'save_post_synonym', [$this, 'saveLongform'] );        
-
     }
 
 
@@ -48,10 +47,19 @@ class Layout {
         echo '<h1>' . $post->post_title . '</h1><br>' . $mycontent;
     }
 
-    public function fillShortcodeBox( ) { 
+    public function fillShortcodeBox( $post ) { 
+        $ret = '';
         if ( $post->ID > 0 ) {
-            echo '<p>[synonym id="' . $post->ID . '"]</p>';
-        }    
+            $ret .= '<p>[synonym id="' . $post->ID . '"]</p>';
+            if ( $post->post_name ){
+                $ret .= '<p>[synonym slug="' . $post->post_name . '"]</p>';
+            }
+            $ret .= '<p>[fau_abbr id="' . $post->ID . '"]</p>';
+            if ( $post->post_name ){
+                $ret .= '<p>[fau_abbr slug="' . $post->post_name . '"]</p>';
+            }
+        }
+        echo $ret;    
     }
 
     public function addSynonymMetaboxes(){
@@ -60,8 +68,17 @@ class Layout {
             __( 'Full form', 'rrze-faq'), // meta box title 
             [$this, 'longformBoxCallback'], // callback function, spits out the content
             'synonym', // post type or page. This adds to posts only
-            'normal'
+            'normal',
+            'high'
         ); 
+        add_meta_box(
+            'shortcode_box', // id, used as the html id att
+            __( 'Integration in pages and posts', 'rrze-synonym'), // meta box title
+            [$this, 'fillShortcodeBox'], // callback function, spits out the content
+            'synonym', // post type or page. This adds to posts only
+            'normal' // context, where on the screen
+        );
+
     }
 
     public function toggleEditor(){
@@ -90,14 +107,6 @@ class Layout {
                         $position = 'side';    
                     }
                 }
-                add_meta_box(
-                    'shortcode_box', // id, used as the html id att
-                    __( 'Integration in pages and posts', 'rrze-synonym'), // meta box title
-                    [$this, 'fillShortcodeBox'], // callback function, spits out the content
-                    'synonym', // post type or page. This adds to posts only
-                    'side', // context, where on the screen
-                    'high' // priority, where should this go in the context
-                );                    
             }    
         }
     }
