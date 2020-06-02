@@ -26,18 +26,18 @@ class Shortcode {
         // add_action( 'init',  [$this, 'initGutenberg'] );
         add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ] ); // liefert Langform (custom field) entweder nach slug oder id
         add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" Langform (custom field) "> title </abbr> nach slug oder id
-        // 'static_content' passt besser zu faq, da 'synonym' und 'fau_abbr' keinen content haben -> add_shortcode( 'static_content', [ $this, 'shortcodeOutput' ] ); // liefert content entweder nach slug oder id
     }
 
 
     private function getPostBySlug( $slug ){
-        $args = array(
+        $ret = get_posts( [
             'name'           => $slug,
             'post_type'      => 'synonym',
             'post_status'    => 'publish',
             'posts_per_page' => 1
-        );
-        return get_posts( $args );
+            ] );
+
+        return ( isset( $ret[0] ) ? $ret[0] : FALSE );
     }
 
     private function getLongform( $postID ){
@@ -72,9 +72,6 @@ class Shortcode {
                 case 'synonym'  :
                     $output = $this->getLongform( $thisPost->ID );
                 break;
-                // case 'static_content'  :
-                //     $output = $thisPost->post_content;
-                // break;
             }    
         }
         return $output;
