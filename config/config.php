@@ -188,7 +188,7 @@ function getShortcodeSettings(){
 		'slug' => [
 			'default' => '',
 			'field_type' => 'text',
-			'label' => __( 'Tags', 'rrze-synonym' ),
+			'label' => __( 'Slug', 'rrze-synonym' ),
 			'type' => 'text'
         ],
 		'id' => [
