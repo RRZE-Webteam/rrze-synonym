@@ -24,8 +24,7 @@ class Sync {
         foreach( $domains as $shortname => $url ){            
             $tStartDetail = microtime( TRUE );
             if ( isset( $options['synonymsync_donotsync_' . $shortname] ) && $options['synonymsync_donotsync_' . $shortname ] != 'on' ){
-                $categories = ( isset( $options['synonymsync_categories_' . $shortname] ) ? implode( ',', $options['synonymsync_categories_' . $shortname] ) : '' );
-                $aCnt = $api->setSynonyms( $url, $categories, $shortname  );
+                $aCnt = $api->setSynonyms( $url, $shortname  );
                 $syncRan = TRUE;
                 $sync_msg = __( 'Domain', 'rrze-synonym' ) . ' "' . $shortname . '": ' . __( 'Synchronization completed.', 'rrze-synonym' ) . ' ' . $aCnt['iNew'] . ' ' . __( 'new', 'rrze-synonym' ) . ', ' . $aCnt['iUpdated'] . ' ' . __( ' updated', 'rrze-synonym' ) . ' ' . __( 'and', 'rrze-synonym' ) . ' ' . $aCnt['iDeleted'] . ' ' . __( 'deleted', 'rrze-synonym' ) . '. ' . __('Required time:', 'rrze-synonym') . ' ' . sprintf( '%.1f ', microtime( TRUE ) - $tStartDetail ) . __( 'seconds', 'rrze-synonym' );
                 logIt( $sync_msg . ' | ' . $mode );

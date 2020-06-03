@@ -137,13 +137,10 @@ class API {
                     }
                     foreach( $entries as $entry ){
                         if ( $entry['source'] == 'website' ){
-                            $content = $entry['content']['rendered'];
-                            $content = $this->absoluteUrl( $content, $url );
-
                             $synonyms[$entry['id']] = array(
                                 'id' => $entry['id'],
                                 'title' => $entry['title']['rendered'],
-                                'content' => $content,
+                                'longform' => $entry['longform'],
                                 'lang' => $entry['lang'],
                                 'remoteID' => $entry['remoteID'],
                                 'remoteChanged' => $entry['remoteChanged']
@@ -172,7 +169,7 @@ class API {
         return $aRet;
     }
 
-    public function setSynonyms( $url, $categories, $shortname ){
+    public function setSynonyms( $url, $shortname ){
         $iNew = 0;
         $iUpdated = 0;
         $iDeleted = 0;
@@ -192,10 +189,10 @@ class API {
                         'ID' => $aRemoteIDs[$synonym['remoteID']]['postID'],
                         'post_name' => sanitize_title( $synonym['title'] ),
                         'post_title' => $synonym['title'],
-                        'post_content' => $synonym['content'],
                         'meta_input' => array(
                             'source' => $shortname,
                             'lang' => $synonym['lang'],
+                            'longform' => $synonym['longform'],
                             'remoteID' => $synonym['remoteID']
                             ),
                         ) ); 
@@ -208,13 +205,13 @@ class API {
                     'post_type' => 'synonym',
                     'post_name' => sanitize_title( $synonym['title'] ),
                     'post_title' => $synonym['title'],
-                    'post_content' => $synonym['content'],
                     'comment_status' => 'closed',
                     'ping_status' => 'closed',
                     'post_status' => 'publish',
                     'meta_input' => array(
                         'source' => $shortname,
                         'lang' => $synonym['lang'],
+                        'longform' => $synonym['longform'],
                         'remoteID' => $synonym['id'],
                         'remoteChanged' => $synonym['remoteChanged']
                         ),
