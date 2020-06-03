@@ -124,9 +124,15 @@ class Layout {
     }
 
     public function longformBoxCallback( $meta_id ) {
+        $source = get_post_meta( $meta_id->ID, 'source', TRUE );
         $longform = get_post_meta( $meta_id->ID, 'longform', TRUE );
-        $output = '<textarea rows="3" cols="60" name="longform" id="longform" class="longform">'. esc_attr($longform) .'</textarea>';
-        $output .= '<p class="description">' . __( 'Enter here the long, written form of the synonym. This text will later replace the shortcode. Attention: Breaks or HTML statements are not accepted.', 'rrze-faq' ) . '</p>';
+
+        if ( $source == '' || $source == 'website'  ){
+            $output = '<textarea rows="3" cols="60" name="longform" id="longform" class="longform">'. esc_attr($longform) .'</textarea>';
+            $output .= '<p class="description">' . __( 'Enter here the long, written form of the synonym. This text will later replace the shortcode. Attention: Breaks or HTML statements are not accepted.', 'rrze-faq' ) . '</p>';
+        } else {
+            $output = $longform;
+        }
         echo $output;
     }
 
