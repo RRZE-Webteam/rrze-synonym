@@ -10,8 +10,6 @@ defined( 'ABSPATH' ) || exit;
 class RESTAPI {
     public function __construct() {
         add_action( 'rest_api_init', [$this, 'createPostMeta'] );
-        // add_action( 'rest_api_init', [$this, 'createTaxDetails'] );
-        // add_action( 'rest_api_init', [$this, 'createChildren'] );
         add_action( 'rest_api_init', [$this, 'addFilters'] );
     }
 
@@ -21,6 +19,10 @@ class RESTAPI {
 
     public function getPostLang( $object ) {
         return get_post_meta( $object['id'], 'lang', TRUE );
+    }
+
+    public function getPostLongform( $object ) {
+        return get_post_meta( $object['id'], 'longform', TRUE );
     }
 
     public function getPostRemoteID( $object ) {
@@ -39,6 +41,10 @@ class RESTAPI {
         ));
         register_rest_field( 'synonym', 'lang', array(
             'get_callback'    => [$this, 'getPostLang'],
+            'schema'          => null,
+        ));
+        register_rest_field( 'synonym', 'longform', array(
+            'get_callback'    => [$this, 'getPostLongform'],
             'schema'          => null,
         ));
         register_rest_field( 'synonym', 'remoteID', array(
