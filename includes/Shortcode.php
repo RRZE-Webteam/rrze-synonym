@@ -44,7 +44,7 @@ class Shortcode {
         return get_post_meta( $postID, 'longform', TRUE );
     }
 
-    public function shortcodeOutput( $atts, $content = "", $shortcode_tag ) {
+    public function shortcodeOutput( $atts, $content = "", $shortcode_tag = "" ) {
         $output = '';
         $thisPost = FALSE;
         // merge given attributes with default ones
@@ -57,12 +57,16 @@ class Shortcode {
         $atts = shortcode_atts( $atts_default, $atts );        
         extract( $atts );
 
-        if ( $slug ){
+        if ( isset( $slug ) && $slug ){
             $thisPost = $this->getPostBySlug( $slug );
         } elseif( $id ) {
             $thisPost = get_post( $id );
         }
 
+        if ( $shortcode_tag == '' ){
+            // Gutenberg
+            $shortcode_tag = $gutenberg_shortcode_tag;
+        }
 
         if ( $thisPost ){
             switch( $shortcode_tag ){
@@ -81,6 +85,9 @@ class Shortcode {
     public function fillGutenbergOptions() {
         $options = get_option( 'rrze-synonym' );
 
+        // we don't need attribute "slug" in Gutenberg and can use "id" solely
+        unset( $this->settings['slug'] );
+
         // fill select id ( = synonym )
         $synonyms = get_posts( array(
             'posts_per_page'  => -1,
@@ -89,15 +96,14 @@ class Shortcode {
             'order' => 'ASC'
         ));
 
-        // we don't need attribute "slug" in Gutenberg and can use "id" solely
-        unset( $this->settings['slug'] );
-
         $this->settings['id']['field_type'] = 'select';
-        $this->settings['id']['default'] = array('');
-        $this->settings['id']['type'] = 'array';
-        $this->settings['id']['items'] = array( 'type' => 'number' );
-        // $this->settings['id']['values'][0] = __( '-- all --', 'rrze-synonym' );
+        $this->settings['id']['type'] = 'number';
+        $defaultSet = FALSE;
         foreach ( $synonyms as $synonym){
+            if ( !$defaultSet ){
+                $this->settings['id']['default'] = $synonym->ID;
+                $defaultSet = TRUE;
+            }
             $this->settings['id']['values'][$synonym->ID] = str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) );
         }
 
@@ -117,6 +123,7 @@ class Shortcode {
                 return;
             }
         }
+
 
         $this->settings = $this->fillGutenbergOptions();
 

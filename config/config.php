@@ -181,7 +181,7 @@ function getShortcodeSettings(){
 			'blockname' => 'synonym',
 			'title' => 'RRZE Synonyms',
 			'category' => 'widgets',
-            'icon' => 'editor-help',
+            'icon' => 'translation',
             'show_block' => 'content',
 			'message' => __( 'Find the settings on the right side', 'rrze-synonym' )
 		],
@@ -192,11 +192,21 @@ function getShortcodeSettings(){
 			'type' => 'text'
         ],
 		'id' => [
-			'default' => NULL,
+			'default' => 0,
 			'field_type' => 'text',
-			'label' => __( 'Synonyms', 'rrze-synonym' ),
+			'label' => __( 'Synonym', 'rrze-synonym' ),
 			'type' => 'number'
 		],
+		'gutenberg_shortcode_tag' => [
+			'values' => [
+				'fau_abbr' => __( 'fau_abbr', 'rrze-synonym' ),
+				'synonym' => __( 'synonym', 'rrze-synonym' )
+			],
+			'default' => 'synonym',
+			'field_type' => 'radio',
+			'label' => __( 'Type of output', 'rrze-synonym' ),
+			'type' => 'string'
+		],		
 		// 'additional_class' => [
 		// 	'default' => '',
 		// 	'field_type' => 'text',
