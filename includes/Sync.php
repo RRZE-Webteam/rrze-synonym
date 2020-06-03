@@ -27,13 +27,6 @@ class Sync {
                 $categories = ( isset( $options['synonymsync_categories_' . $shortname] ) ? implode( ',', $options['synonymsync_categories_' . $shortname] ) : '' );
                 $aCnt = $api->setSynonyms( $url, $categories, $shortname  );
                 $syncRan = TRUE;
-                foreach( $aCnt['URLhasSlider'] as $URLhasSlider ){
-                    $error_msg = __( 'Domain', 'rrze-synonym' ) . ' "' . $shortname . '": ' . __( 'Synchronization error. This synonym contains sliders ([gallery]) and cannot be synchronized:', 'rrze-synonym' ) . ' ' . $URLhasSlider;
-                    logIt( $error_msg . ' | ' . $mode );
-                    if ( $allowSettingsError ){
-                        add_settings_error( 'Synchronization error', 'syncerror', $error_msg, 'error' );
-                    }
-                }
                 $sync_msg = __( 'Domain', 'rrze-synonym' ) . ' "' . $shortname . '": ' . __( 'Synchronization completed.', 'rrze-synonym' ) . ' ' . $aCnt['iNew'] . ' ' . __( 'new', 'rrze-synonym' ) . ', ' . $aCnt['iUpdated'] . ' ' . __( ' updated', 'rrze-synonym' ) . ' ' . __( 'and', 'rrze-synonym' ) . ' ' . $aCnt['iDeleted'] . ' ' . __( 'deleted', 'rrze-synonym' ) . '. ' . __('Required time:', 'rrze-synonym') . ' ' . sprintf( '%.1f ', microtime( TRUE ) - $tStartDetail ) . __( 'seconds', 'rrze-synonym' );
                 logIt( $sync_msg . ' | ' . $mode );
                 if ( $allowSettingsError ){
