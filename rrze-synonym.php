@@ -3,8 +3,8 @@
 /*
 Plugin Name:     RRZE Synonym
 Plugin URI:      https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym
-Description:       
-Version:         2.5.0
+Description:     Plugin, um Synonyme zu erstellen und von Websites aus dem FAU-Netzwerk zu synchronisieren. Shortcode (bei classic editor) bzw. Block Editor (Gutenberg): Es gibt zwei Ausgaben: [synonym liefert die Langform des Synonyms und [fau_abbr ...] die Abkürzung als <abbr title=LANGFORM lang= . Bei der Eingabe kann die Sprache bestimmt werden, in der die Langform ausgesprochen wird. Im Gutenberg-Block gibt es zu den zwei Shortcodes ein Dropdown.
+Version:         2.5.1
 Author:          RRZE Webteam
 Author URI:      https://blogs.fau.de/webworking/
 License:         GNU General Public License v2
