@@ -191,7 +191,7 @@ function getShortcodeSettings(){
 		// 'additional_class' => [
 		// 	'default' => '',
 		// 	'field_type' => 'text',
-		// 	'label' => __( 'Additonal CSS-class(es) for sourrounding DIV', 'rrze-synonym' ),
+		// 	'label' => __( 'Additonal CSS-class(es) for surrounding DIV', 'rrze-synonym' ),
 		// 	'type' => 'text'
 		// ],
     ];

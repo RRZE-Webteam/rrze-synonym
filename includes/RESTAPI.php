@@ -13,56 +13,27 @@ class RESTAPI {
         add_action( 'rest_api_init', [$this, 'addFilters'] );
     }
 
-    public function getPostSource( $object ) {
-        return get_post_meta( $object['id'], 'source', TRUE );
-    }
-
-    public function getPostLang( $object ) {
-        return get_post_meta( $object['id'], 'lang', TRUE );
-    }
-
-    public function getPostLongform( $object ) {
-        return get_post_meta( $object['id'], 'longform', TRUE );
-    }
-
-    public function getTitleLang( $object ) {
-        return get_post_meta( $object['id'], 'titleLang', TRUE );
-    }
-
-    public function getPostRemoteID( $object ) {
-        return get_post_meta( $object['id'], 'remoteID', TRUE );
-    }
-
-    public function getPostRemoteChanged( $object ) {
-        return get_post_meta( $object['id'], 'remoteChanged', TRUE );
+    public function getMyPostMeta( $object, $attr ){
+        return get_post_meta( $object['id'], $attr, TRUE );
     }
 
     // make API deliver source and lang for synonyms
     public function createPostMeta() {
-        register_rest_field( 'synonym', 'source', array(
-            'get_callback'    => [$this, 'getPostSource'],
-            'schema'          => null,
-        ));
-        register_rest_field( 'synonym', 'lang', array(
-            'get_callback'    => [$this, 'getPostLang'],
-            'schema'          => null,
-        ));
-        register_rest_field( 'synonym', 'longform', array(
-            'get_callback'    => [$this, 'getPostLongform'],
-            'schema'          => null,
-        ));
-        register_rest_field( 'synonym', 'titleLang', array(
-            'get_callback'    => [$this, 'getTitleLang'],
-            'schema'          => null,
-        ));
-        register_rest_field( 'synonym', 'remoteID', array(
-            'get_callback'    => [$this, 'getPostRemoteID'],
-            'schema'          => null,
-        ));
-        register_rest_field( 'synonym', 'remoteChanged', array(
-            'get_callback'    => [$this, 'getPostRemoteChanged'],
-            'schema'          => null,
-        ));
+        $fields = array( 
+            'source',
+            'lang',
+            'longform',
+            'titleLang',
+            'remoteID',
+            'remoteChanged'
+            );
+
+        foreach ( $fields as $field ){
+            register_rest_field( 'synonym', $field, array(
+                'get_callback'    => [$this, 'getMyPostMeta'],
+                'schema'          => null,
+            ));
+        }
     }
    
     public function addFilterParam( $args, $request ) {

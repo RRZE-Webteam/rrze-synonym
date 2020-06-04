@@ -19,7 +19,6 @@ class API {
 
         if ( $status_code == '200' ){
             $content = json_decode( wp_remote_retrieve_body( $request ), TRUE );
-            // $ret = substr( $content[0]['guid']["rendered"], 0 , strpos( $content[0]['guid']["rendered"], '?' ) );
             $ret = substr( $content[0]['link'], 0 , strpos( $content[0]['link'], '/synonym' ) ) . '/';
         }
         return $ret;

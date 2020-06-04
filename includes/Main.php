@@ -98,8 +98,6 @@ class Main {
                                     $api->deleteDomain( $shortname );
                                     unset( $options['synonymsync_shortname_' . $shortname] );
                                     unset( $options['synonymsync_url_' . $shortname] );
-                                    unset( $options['synonymsync_categories_' . $shortname] );
-                                    // unset( $options['synonymsync_mode_' . $shortname] );
                                     unset( $options['synonymsync_hr_' . $shortname] );
                                     if ( ( $key = array_search( $url, $domains ) ) !== false) {
                                         unset( $domains[$key] );

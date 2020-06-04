@@ -348,7 +348,6 @@ class Settings {
         $additionalfields = array();
 
         foreach ( $this->domains as $shortname => $url ){
-            // $aCategories = $api->getCategories( $url, $shortname ); 
             foreach ( $this->settingsFields['synonymsync'] as $field ){
                 if ( $field['name'] == 'autosync' || $field['name'] == 'frequency' || $field['name'] == 'info' ){
                     if ( $i == 1 ){
@@ -363,14 +362,6 @@ class Settings {
                     case 'url': 
                         $field['default'] = $url;
                         break;
-                    // case 'categories':
-                    //     if ( !$aCategories ){
-                    //         $field['options'][''] = __( 'no category with source = "website" found', 'rrze-synonym' );
-                    //     }
-                    //     foreach ( $aCategories as $slug => $name ){
-                    //         $field['options'][$slug] = $name;
-                    //     }
-                    //     break;    
                 }
                 $field['name'] = $field['name'] . '_' . $shortname;
                 $newFields[] = $field;
