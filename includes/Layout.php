@@ -181,13 +181,17 @@ class Layout {
         }
     }
 
-    public function savePostMeta( $post_id ){
-        if ( ! current_user_can( 'edit_post', $post_id ) || ! isset( $_POST['longform'] ) || ! isset( $_POST['titleLang'] ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ){
-            return $post_id;
+    public function savePostMeta( $postID ){
+        if ( ! current_user_can( 'edit_post', $postID ) || ! isset( $_POST['longform'] ) || ! isset( $_POST['titleLang'] ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ){
+            return $postID;
         }
 
-        update_post_meta( $post_id, 'longform', sanitize_text_field( $_POST['longform'] ) );        
-        update_post_meta( $post_id, 'titleLang', sanitize_text_field( $_POST['titleLang'] ) );        
+        update_post_meta( $postID, 'source', 'website' );        
+        update_post_meta( $postID, 'remoteID', $postID );
+        update_post_meta( $postID, 'longform', sanitize_text_field( $_POST['longform'] ) );        
+        update_post_meta( $postID, 'titleLang', sanitize_text_field( $_POST['titleLang'] ) );
+        $remoteChanged = get_post_timestamp( $postID, 'modified' );
+        update_post_meta( $postID, 'remoteChanged', $remoteChanged );
     }
 
 
