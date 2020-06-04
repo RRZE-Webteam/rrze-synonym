@@ -12,8 +12,8 @@ define( 'DEFAULTLANGCODES', array(
     "en" => __('English','rrze-synonym'),
     "es" => __('Spanish','rrze-synonym'),
     "fr" => __('French','rrze-synonym'),
+    "ru" => __('Russian','rrze-synonym'),
     "zh" => __('Chinese','rrze-synonym'),
-    "ru" => __('Russian','rrze-synonym')
     ));
 
 /**
@@ -159,11 +159,10 @@ class Layout {
         $output .= '<p class="description">' . __( 'Enter here the long, written form of the synonym. This text will later replace the shortcode. Attention: Breaks or HTML statements are not accepted.', 'rrze-faq' ) . '</p>';// Geben Sie hier die lange, ausgeschriebene Form des Synonyms ein. Mit diesem Text wird dann im späteren Gebrauch der verwendete Shortcode ersetzt. Achtung: Umbrüche oder HTML-Anweisungen werden nicht übernommen.
 
         // langTitle
+        $selectedLang = ( $fields['titleLang'] ? $fields['titleLang'] : substr( get_locale(), 0, 2) );
         $output .= '<br><select class="" id="titleLang" name="titleLang">';
         foreach( DEFAULTLANGCODES as $lang => $desc ){
-            // $locale = substr( get_locale(), 0, 5);
-        
-            $selected = ( $fields['titleLang'] == $lang ? ' selected' : '' );
+            $selected = ( $lang == $selectedLang ? ' selected' : '' );
             $output .= '<option value="' . $lang . '"' . $selected . '>' . $desc . '</option>';
         }
         $output .= '</select>';
