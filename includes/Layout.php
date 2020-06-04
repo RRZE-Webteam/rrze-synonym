@@ -7,6 +7,14 @@ defined( 'ABSPATH' ) || exit;
 // use function RRZE\Synonym\API\getDomains;
 use RRZE\Synonym\API;
 
+define( 'DEFAULTLANGCODES', array(
+    "de" => __('German','rrze-synonym'),
+    "en" => __('English','rrze-synonym'),
+    "es" => __('Spanish','rrze-synonym'),
+    "fr" => __('French','rrze-synonym'),
+    "zh" => __('Chinese','rrze-synonym'),
+    "ru" => __('Russian','rrze-synonym')
+    ));
 
 /**
  * Layout settings for "synonym"
@@ -14,19 +22,19 @@ use RRZE\Synonym\API;
 class Layout {
 
     public function __construct() {
-        add_action( 'add_meta_boxes', [$this, 'addSynonymMetaboxes'] );
+        add_action( 'add_meta_boxes', [$this, 'addSynonymMetaboxes'], 10 );
 
         add_filter( 'pre_get_posts', [$this, 'makeSortable'] );
 
         // show content in box if not editable ( = source is not "website" )
-        add_action( 'admin_menu', [$this, 'toggleEditor'] );
+        add_action( 'admin_menu', [$this, 'toggleEditor'], 11 );
         // Table "All synonym"
         add_filter( 'manage_synonym_posts_columns', [$this, 'addColumns'] );        
         add_action( 'manage_synonym_posts_custom_column', [$this, 'getColumnsValues'], 10, 2 );
         add_filter( 'manage_edit-synonym_sortable_columns', [$this, 'addSortableColumns'] );
 
-        // save longform
-        add_action( 'save_post_synonym', [$this, 'saveLongform'] );        
+        // save longform and titleLang
+        add_action( 'save_post_synonym', [$this, 'savePostMeta'] );        
     }
 
 
@@ -43,8 +51,15 @@ class Layout {
     }
 
     public function fillContentBox( $post ) {
-        $mycontent = get_post_meta( $post->ID, 'longform', TRUE );
-        echo '<h1>' . $post->post_title . '</h1><br>' . $mycontent;
+        $fields = $this->getPostMetas( $post->ID );
+        $output = '';
+
+        $output .= '<h1>' . $post->post_title . '</h1><br>';
+        $output .= '<strong>' . __( 'Full form', 'rrze-faq') . ':</strong>';
+        $output .= '<p>' . $fields['longform'] . '</p>';
+        $output .= '<p><i>' . __( 'Pronunciation', 'rrze-synonym' ) . ': ' . DEFAULTLANGCODES[$fields['titleLang']] . '</i></p>';
+
+        echo $output;
     }
 
     public function fillShortcodeBox( $post ) { 
@@ -63,20 +78,24 @@ class Layout {
     }
 
     public function addSynonymMetaboxes(){
+        $post_id = ( isset( $_GET['post'] ) ? $_GET['post'] : ( isset ( $_POST['post_ID'] ) ? $_POST['post_ID'] : 0 ) ) ;
+        $source = get_post_meta( $post_id, "source", TRUE );
+        if ( ( $source == '' ) || ( $source == 'website' ) ){
+            add_meta_box(
+                'postmetabox',
+                __( 'Full form', 'rrze-faq'),
+                [$this, 'postmetaCallback'],
+                'synonym',
+                'normal',
+                'high'
+            ); 
+        }
         add_meta_box(
-            'longformbox', // id, used as the html id att
-            __( 'Full form', 'rrze-faq'), // meta box title 
-            [$this, 'longformBoxCallback'], // callback function, spits out the content
-            'synonym', // post type or page. This adds to posts only
-            'normal',
-            'high'
-        ); 
-        add_meta_box(
-            'shortcode_box', // id, used as the html id att
-            __( 'Integration in pages and posts', 'rrze-synonym'), // meta box title
-            [$this, 'fillShortcodeBox'], // callback function, spits out the content
-            'synonym', // post type or page. This adds to posts only
-            'normal' // context, where on the screen
+            'shortcode_box',
+            __( 'Integration in pages and posts', 'rrze-synonym'),
+            [$this, 'fillShortcodeBox'],
+            'synonym',
+            'normal'
         );
 
     }
@@ -95,14 +114,15 @@ class Layout {
                         $remoteID = get_post_meta( $post_id, "remoteID", TRUE );
                         $link = $domains[$source] . 'wp-admin/post.php?post=' . $remoteID . '&action=edit';
                         remove_post_type_support( 'synonym', 'title' );
-                        remove_meta_box( 'submitdiv', 'synonym', 'side' );            
+                        remove_meta_box( 'submitdiv', 'synonym', 'side' );  
+                        // remove_meta_box( 'postmetabox', 'synonym', 'normal' );
                         add_meta_box(
-                            'read_only_content_box', // id, used as the html id att
+                            'read_only_content_box',
                             __( 'This synonym cannot be edited because it is synchronized', 'rrze-synonym') . '. <a href="' . $link . '" target="_blank">' . __('You can edit it at the source', 'rrze-synonym') . '</a>',
-                            [$this, 'fillContentBox'], // callback function, spits out the content
-                            'synonym', // post type or page. This adds to posts only
-                            'normal', // context, where on the screen
-                            'high' // priority, where should this go in the context
+                            [$this, 'fillContentBox'],
+                            'synonym',
+                            'normal',
+                            'high'
                         );
                         $position = 'side';    
                     }
@@ -123,16 +143,32 @@ class Layout {
         return $columns;
     }
 
-    public function longformBoxCallback( $meta_id ) {
-        $source = get_post_meta( $meta_id->ID, 'source', TRUE );
-        $longform = get_post_meta( $meta_id->ID, 'longform', TRUE );
+    public function getPostMetas( $postID ){
+        return array( 
+            'source' => get_post_meta( $postID, 'source', TRUE ),
+            'longform' => get_post_meta( $postID, 'longform', TRUE ),
+            'titleLang' => get_post_meta( $postID, 'titleLang', TRUE )
+        );
+    }
 
-        if ( $source == '' || $source == 'website'  ){
-            $output = '<textarea rows="3" cols="60" name="longform" id="longform" class="longform">'. esc_attr($longform) .'</textarea>';
-            $output .= '<p class="description">' . __( 'Enter here the long, written form of the synonym. This text will later replace the shortcode. Attention: Breaks or HTML statements are not accepted.', 'rrze-faq' ) . '</p>';
-        } else {
-            $output = $longform;
+    public function postmetaCallback( $meta_id ) {
+        $fields = $this->getPostMetas( $meta_id->ID );
+
+        // longform
+        $output = '<textarea rows="3" cols="60" name="longform" id="longform" class="longform">'. esc_attr( $fields['longform'] ) .'</textarea>';
+        $output .= '<p class="description">' . __( 'Enter here the long, written form of the synonym. This text will later replace the shortcode. Attention: Breaks or HTML statements are not accepted.', 'rrze-faq' ) . '</p>';// Geben Sie hier die lange, ausgeschriebene Form des Synonyms ein. Mit diesem Text wird dann im späteren Gebrauch der verwendete Shortcode ersetzt. Achtung: Umbrüche oder HTML-Anweisungen werden nicht übernommen.
+
+        // langTitle
+        $output .= '<br><select class="" id="titleLang" name="titleLang">';
+        foreach( DEFAULTLANGCODES as $lang => $desc ){
+            // $locale = substr( get_locale(), 0, 5);
+        
+            $selected = ( $fields['titleLang'] == $lang ? ' selected' : '' );
+            $output .= '<option value="' . $lang . '"' . $selected . '>' . $desc . '</option>';
         }
+        $output .= '</select>';
+        $output .= '<p class="description">' . __( 'Choose the language in which the long form is pronounced.', 'rrze-synonym' ) . '</p>'; // Wählen Sie die Sprache, in der die Langform ausgesprochen wird. 
+
         echo $output;
     }
 
@@ -146,11 +182,13 @@ class Layout {
         }
     }
 
-    public function saveLongform( $post_id ){
-        if ( ! current_user_can( 'edit_post', $post_id ) || ! isset( $_POST['longform'] ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ){
+    public function savePostMeta( $post_id ){
+        if ( ! current_user_can( 'edit_post', $post_id ) || ! isset( $_POST['longform'] ) || ! isset( $_POST['titleLang'] ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ){
             return $post_id;
         }
+
         update_post_meta( $post_id, 'longform', sanitize_text_field( $_POST['longform'] ) );        
+        update_post_meta( $post_id, 'titleLang', sanitize_text_field( $_POST['titleLang'] ) );        
     }
 
 

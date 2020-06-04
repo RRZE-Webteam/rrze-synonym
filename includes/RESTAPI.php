@@ -25,6 +25,10 @@ class RESTAPI {
         return get_post_meta( $object['id'], 'longform', TRUE );
     }
 
+    public function getTitleLang( $object ) {
+        return get_post_meta( $object['id'], 'titleLang', TRUE );
+    }
+
     public function getPostRemoteID( $object ) {
         return get_post_meta( $object['id'], 'remoteID', TRUE );
     }
@@ -45,6 +49,10 @@ class RESTAPI {
         ));
         register_rest_field( 'synonym', 'longform', array(
             'get_callback'    => [$this, 'getPostLongform'],
+            'schema'          => null,
+        ));
+        register_rest_field( 'synonym', 'titleLang', array(
+            'get_callback'    => [$this, 'getTitleLang'],
             'schema'          => null,
         ));
         register_rest_field( 'synonym', 'remoteID', array(

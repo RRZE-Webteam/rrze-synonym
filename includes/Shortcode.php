@@ -25,7 +25,7 @@ class Shortcode {
         $this->settings = getShortcodeSettings();
         add_action( 'init',  [$this, 'initGutenberg'] );
         add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ] ); // liefert Langform (custom field) entweder nach slug oder id
-        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" Langform (custom field) "> title </abbr> nach slug oder id
+        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" Langform (custom field) " lang=" " > title </abbr> nach slug oder id
     }
 
 
@@ -42,6 +42,10 @@ class Shortcode {
 
     private function getLongform( $postID ){
         return get_post_meta( $postID, 'longform', TRUE );
+    }
+
+    private function getTitleLang( $postID ){
+        return get_post_meta( $postID, 'titleLang', TRUE );
     }
 
     public function shortcodeOutput( $atts, $content = "", $shortcode_tag = "" ) {
@@ -71,7 +75,7 @@ class Shortcode {
         if ( $thisPost ){
             switch( $shortcode_tag ){
                 case 'fau_abbr'  :
-                    $output = '<abbr title="' . $this->getLongform( $thisPost->ID ) . '">'. $thisPost->post_title . '</abbr>';
+                    $output = '<abbr title="' . $this->getLongform( $thisPost->ID ) . '" lang="' . $this->getTitleLang( $thisPost->ID ) . '">'. $thisPost->post_title . '</abbr>';
                 break;
                 case 'synonym'  :
                     $output = $this->getLongform( $thisPost->ID );

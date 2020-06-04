@@ -141,6 +141,7 @@ class API {
                                 'id' => $entry['id'],
                                 'title' => $entry['title']['rendered'],
                                 'longform' => $entry['longform'],
+                                'titleLang' => $entry['titleLang'],
                                 'lang' => $entry['lang'],
                                 'remoteID' => $entry['remoteID'],
                                 'remoteChanged' => $entry['remoteChanged']
@@ -193,6 +194,7 @@ class API {
                             'source' => $shortname,
                             'lang' => $synonym['lang'],
                             'longform' => $synonym['longform'],
+                            'titleLang' => $synonym['titleLang'],
                             'remoteID' => $synonym['remoteID']
                             ),
                         ) ); 
@@ -212,6 +214,7 @@ class API {
                         'source' => $shortname,
                         'lang' => $synonym['lang'],
                         'longform' => $synonym['longform'],
+                        'titleLang' => $synonym['titleLang'],
                         'remoteID' => $synonym['id'],
                         'remoteChanged' => $synonym['remoteChanged']
                         ),

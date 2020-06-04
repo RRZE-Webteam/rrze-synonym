@@ -102,31 +102,12 @@ function getFields() {
 				'type' => 'plaintext',
 				'default' => ''
 			],
-			// [
-			// 	'name' => 'categories',
-			// 	'label' => __('Categories', 'rrze-synonym' ),
-			// 	'desc' => __('Please select the categories you\'d like to fetch synonyms to.', 'rrze-synonym' ),
-			// 	'type' => 'multiselect',
-			// 	'options' => []
-			// ],
 			[
 				'name' => 'donotsync',
 				'label' => __('Synchronize', 'rrze-synonym' ),
 				'desc' => __('Do not synchronize', 'rrze-synonym' ),
 				'type' => 'checkbox',
 			],
-			// [
-			// 	'name' => 'mode',
-			// 	'label' => __('Synchronize', 'rrze-synonym' ),
-			// 	'desc' => __( 'All synonyms that match to the selected categories will be updated or inserted. Already synchronized synonyms that refer to categories which are not selected will be deleted. synonyms that have been deleted at the remote website will be deleted on this website, too.', 'rrze-synonym' ),
-			// 	'default' => '',
-			// 	'options' => [
-			// 		'' => __('Do not synchronize.', 'rrze-synonym' ),
-			// 		'manual' => __('Synchronize one time now.', 'rrze-synonym' ),
-			// 		'auto' => __('Synchronize now and then automatically.', 'rrze-synonym' ),
-			// 	],
-			// 	'type' => 'radio'
-			// ],
 			[
 				'name' => 'hr',
 				'label' => '',
@@ -199,8 +180,8 @@ function getShortcodeSettings(){
 		],
 		'gutenberg_shortcode_tag' => [
 			'values' => [
-				'fau_abbr' => __( 'fau_abbr', 'rrze-synonym' ),
-				'synonym' => __( 'synonym', 'rrze-synonym' )
+				'fau_abbr' => __( 'Abbreviation', 'rrze-synonym' ), // Abkürzung
+				'synonym' => __( 'Longform', 'rrze-synonym' ) // Lange Form
 			],
 			'default' => 'synonym',
 			'field_type' => 'radio',
