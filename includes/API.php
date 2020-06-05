@@ -139,7 +139,7 @@ class API {
                             $synonyms[$entry['id']] = array(
                                 'id' => $entry['id'],
                                 'title' => $entry['title']['rendered'],
-                                'longform' => $entry['longform'],
+                                'synonym' => $entry['synonym'],
                                 'titleLang' => $entry['titleLang'],
                                 'lang' => $entry['lang'],
                                 'remoteID' => $entry['remoteID'],
@@ -192,7 +192,7 @@ class API {
                         'meta_input' => array(
                             'source' => $shortname,
                             'lang' => $synonym['lang'],
-                            'longform' => $synonym['longform'],
+                            'synonym' => $synonym['synonym'],
                             'titleLang' => $synonym['titleLang'],
                             'remoteID' => $synonym['remoteID']
                             ),
@@ -212,7 +212,7 @@ class API {
                     'meta_input' => array(
                         'source' => $shortname,
                         'lang' => $synonym['lang'],
-                        'longform' => $synonym['longform'],
+                        'synonym' => $synonym['synonym'],
                         'titleLang' => $synonym['titleLang'],
                         'remoteID' => $synonym['id'],
                         'remoteChanged' => $synonym['remoteChanged']

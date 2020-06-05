@@ -4,6 +4,8 @@ namespace RRZE\Synonym;
 
 defined( 'ABSPATH' ) || exit;
 
+
+
 /**
  * Custom Post Type "synonym"
  */
@@ -36,7 +38,7 @@ class CPT {
         );
         $args = array(
                 'label'               => __( 'synonym', 'rrze-synonym' ),
-                'description'         => __( 'synonym informations', 'rrze-synonym' ),
+                'description'         => __( 'Synonym informations', 'rrze-synonym' ),
                 'labels'              => $labels,
                 'supports'            => array( 'title' ),
                 'hierarchical'        => false,

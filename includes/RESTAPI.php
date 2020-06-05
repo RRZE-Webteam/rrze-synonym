@@ -22,7 +22,7 @@ class RESTAPI {
         $fields = array( 
             'source',
             'lang',
-            'longform',
+            'synonym',
             'titleLang',
             'remoteID',
             'remoteChanged'
