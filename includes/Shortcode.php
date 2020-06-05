@@ -40,9 +40,13 @@ class Shortcode {
         return ( isset( $ret[0] ) ? $ret[0] : FALSE );
     }
 
+    private function getPostsByCPT( $cpt ){
+        $postQuery = array('post_type' => $cpt, 'post_status' => 'publish', 'numberposts' => -1, 'suppress_filters' => false);
+        return get_posts( $postQuery );
+    }
+
     public function shortcodeOutput( $atts, $content = "", $shortcode_tag = "" ) {
-        $output = '';
-        $thisPost = FALSE;
+        $myPosts = FALSE;
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){
@@ -53,10 +57,14 @@ class Shortcode {
         $atts = shortcode_atts( $atts_default, $atts );        
         extract( $atts );
 
+
         if ( isset( $slug ) && $slug ){
-            $thisPost = $this->getPostBySlug( $slug );
+            $myPosts = array( $this->getPostBySlug( $slug ) );
         } elseif( $id ) {
-            $thisPost = get_post( $id );
+            $myPosts = array( get_post( $id ) );
+        } else {
+            // show all
+            $myPosts = $this->getPostsByCPT( 'synonym' );
         }
 
         if ( $shortcode_tag == '' ){
@@ -64,15 +72,26 @@ class Shortcode {
             $shortcode_tag = $gutenberg_shortcode_tag;
         }
 
-        if ( $thisPost ){
+        $output = '';
+        if ( $myPosts ){
             switch( $shortcode_tag ){
                 case 'fau_abbr'  :
-                    $output = '<abbr title="' . get_post_meta( $thisPost->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $thisPost->ID, 'titleLang', TRUE ) . '">'. $thisPost->post_title . '</abbr>';
+                    foreach( $myPosts as $post ){
+                        $output .= '<abbr title="' . get_post_meta( $thisPost->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $thisPost->ID, 'titleLang', TRUE ) . '">'. $thisPost->post_title . '</abbr>';
+                    }
                 break;
                 case 'synonym'  :
-                    $output = get_post_meta( $thisPost->ID, 'synonym', TRUE );
+                    foreach( $myPosts as $post ){
+                        $output .= '<div class="synonym">';
+                        $output .= '<h2 class="small">' . $thisPost->post_title . '</h2>';
+                        $output .= '<p>' . get_post_meta( $thisPost->ID, 'synonym', TRUE ) . '</p>';
+                        $output .= '<div>';
+                    }
                 break;
-            }    
+            }
+            if ( count( $myPosts ) > 1 ){
+                $output = '<div class="synonym-outer">' . $output . '</div>';
+            }
         }
         return $output;
     }
@@ -94,12 +113,9 @@ class Shortcode {
 
         $this->settings['id']['field_type'] = 'select';
         $this->settings['id']['type'] = 'number';
-        $defaultSet = FALSE;
+        $this->settings['id']['values'][0] = __( '-- all --', 'rrze-synonym' );
+        $this->settings['id']['default'] = 0;
         foreach ( $synonyms as $synonym){
-            if ( !$defaultSet ){
-                $this->settings['id']['default'] = $synonym->ID;
-                $defaultSet = TRUE;
-            }
             $this->settings['id']['values'][$synonym->ID] = str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) );
         }
 
