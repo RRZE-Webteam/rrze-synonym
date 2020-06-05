@@ -77,14 +77,14 @@ class Shortcode {
             switch( $shortcode_tag ){
                 case 'fau_abbr'  :
                     foreach( $myPosts as $post ){
-                        $output .= '<abbr title="' . get_post_meta( $thisPost->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $thisPost->ID, 'titleLang', TRUE ) . '">'. $thisPost->post_title . '</abbr>';
+                        $output .= '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. $post->post_title . '</abbr>';
                     }
                 break;
                 case 'synonym'  :
                     foreach( $myPosts as $post ){
                         $output .= '<div class="synonym">';
-                        $output .= '<h2 class="small">' . $thisPost->post_title . '</h2>';
-                        $output .= '<p>' . get_post_meta( $thisPost->ID, 'synonym', TRUE ) . '</p>';
+                        $output .= '<h2 class="small">' . $post->post_title . '</h2>';
+                        $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
                         $output .= '<div>';
                     }
                 break;
