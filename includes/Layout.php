@@ -110,7 +110,6 @@ class Layout {
                     if ( $source != 'website' ){
                         $api = new API();
                         $domains = $api->getDomains();
-                        $source = get_post_meta( $post_id, "source", TRUE );
                         $remoteID = get_post_meta( $post_id, "remoteID", TRUE );
                         $link = $domains[$source] . 'wp-admin/post.php?post=' . $remoteID . '&action=edit';
                         remove_post_type_support( 'synonym', 'title' );

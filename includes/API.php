@@ -28,7 +28,7 @@ class API {
         return in_array( $url, $this->getDomains() );
     }
 
-    public function getDomains(){
+    public static function getDomains(){
         $domains = array();
         $options = get_option( 'rrze-synonym' );
         if ( isset( $options['registeredDomains'] ) ){
