@@ -54,7 +54,7 @@ class Layout {
         $fields = $this->getPostMetas( $post->ID );
         $output = '';
 
-        $output .= '<h1>' . $post->post_title . '</h1><br>';
+        $output .= '<h1>' . html_entity_decode( $post->post_title ) . '</h1><br>';
         $output .= '<strong>' . __( 'Full form', 'rrze-faq') . ':</strong>';
         $output .= '<p>' . $fields['synonym'] . '</p>';
         $output .= '<p><i>' . __( 'Pronunciation', 'rrze-synonym' ) . ': ' . DEFAULTLANGCODES[$fields['titleLang']] . '</i></p>';
