@@ -4,7 +4,6 @@ namespace RRZE\Synonym;
 
 defined( 'ABSPATH' ) || exit;
 
-// use function RRZE\Synonym\API\getDomains;
 use RRZE\Synonym\API;
 
 define( 'DEFAULTLANGCODES', array(
@@ -27,7 +26,7 @@ class Layout {
         add_filter( 'pre_get_posts', [$this, 'makeSortable'] );
 
         // show content in box if not editable ( = source is not "website" )
-        add_action( 'admin_menu', [$this, 'toggleEditor'], 11 );
+        add_action( 'admin_menu', [$this, 'toggleEditor'] );
         // Table "All synonym"
         add_filter( 'manage_synonym_posts_columns', [$this, 'addColumns'] );        
         add_action( 'manage_synonym_posts_custom_column', [$this, 'getColumnsValues'], 10, 2 );

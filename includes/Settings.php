@@ -131,8 +131,7 @@ class Settings {
      */
     protected function setFields() {
         $this->settingsFields = getFields();
-
-        if ( isset($_GET['page']) && $_GET['page'] == 'rrze-synonym' ){
+        if ( isset($_GET['page']) && $_GET['page'] == 'rrze-synonym' && isset($_GET['current-tab']) && $_GET['current-tab'] == 'synonymsync' ){
             // Add Sync fields for each domain
             $this->settingsFields['synonymsync'] = $this->setSettingsDomains();
         }
@@ -327,7 +326,8 @@ class Settings {
     }
 
     public function domainOutput(){
-        $aDomains = API::getDomains();        
+        $api = new API();
+        $aDomains = $api->getDomains();
         if ( count($aDomains) > 0 ){
             $i = 1;
             echo '<style> .settings_page_rrze-synonym #log .form-table th {width:0;}</style>';
@@ -348,7 +348,7 @@ class Settings {
         $api = new API();
         $additionalfields = array();
 
-        $aDomains = API::getDomains();
+        $aDomains = $api->getDomains();
         foreach ( $aDomains as $shortname => $url ){
             foreach ( $this->settingsFields['synonymsync'] as $field ){
                 if ( $field['name'] == 'autosync' || $field['name'] == 'frequency' || $field['name'] == 'info' ){

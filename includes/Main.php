@@ -65,46 +65,38 @@ class Main {
     }
 
 
-
-
-
     /**
      * Click on buttons "sync", "add domain", "delete domain" or "delete logfile"
      */
     public function switchTask( $options ) {
         $api = new API();
         $domains = $api->getDomains();
+        
+        // get stored options because they are generated and not defined in config.php
+        $options = array_merge(get_option( 'rrze-synonym' ), $options);
         $tab = ( isset($_GET['synonymdoms'] ) ? 'synonymdoms' : ( isset( $_GET['sync'] ) ? 'sync' : ( isset( $_GET['del'] ) ? 'del' : '' ) ) );
 
         switch ( $tab ){
             case 'synonymdoms':
-                if ( isset( $_POST['rrze-synonym']['synonymdoms_new_url'] ) && $_POST['rrze-synonym']['synonymdoms_new_url'] != '' ){
-                    // add domain
-                    $domains = $api->setDomain( $_POST['rrze-synonym']['synonymdoms_new_name'], $_POST['rrze-synonym']['synonymdoms_new_url'] );
-                    if ( !$domains ){
-                        $domains = $api->getDomains();
-                        add_settings_error( 'synonymdoms_new_url', 'synonymdoms_new_error', $_POST['rrze-synonym']['synonymdoms_new_url'] . ' is not valid.', 'error' );        
+                if ( $options['synonymdoms_new_name'] && $options['synonymdoms_new_url'] ){
+                    // add new domain
+                    $aRet = $api->setDomain( $options['synonymdoms_new_name'], $options['synonymdoms_new_url'], $domains );
+
+                    if ( $aRet['status'] ){
+                        // url is correct, RRZE-FAQ at given url is in use and shortname is new
+                        $domains[$aRet['ret']['cleanShortname']] = $aRet['ret']['cleanUrl'];
+                    }else{
+                        add_settings_error( 'synonymdoms_new_url', 'synonymdoms_new_error', $aRet['ret'], 'error' );        
                     }
-                    $options['synonymdoms_new_name'] = '';
-                    $options['synonymdoms_new_url'] = '';
                 } else {
                     // delete domain(s)
                     foreach ( $_POST as $key => $url ){
                         if ( substr( $key, 0, 11 ) === "del_domain_" ){
-                            foreach( $options as $field => $val ){
-                                if ( ( stripos( $field, 'synonymsync_url' ) === 0 ) && ( $val == $url ) ){
-                                    $parts = explode( '_', $field );
-                                    $shortname = $parts[2];
-                                    $api->deleteDomain( $shortname );
-                                    unset( $options['synonymsync_shortname_' . $shortname] );
-                                    unset( $options['synonymsync_url_' . $shortname] );
-                                    unset( $options['synonymsync_hr_' . $shortname] );
-                                    if ( ( $key = array_search( $url, $domains ) ) !== false) {
-                                        unset( $domains[$key] );
-                                    }           
-                                    logIt( __( 'Domain', 'rrze-synonym' ) . ' "' . $shortname . '" ' . __( 'deleted', 'rrze-synonym') );
-                                }
-                            }   
+                            if (($shortname = array_search($url, $domains)) !== false) {
+                                unset($domains[$shortname]);
+                                $api->deleteSynonym( $shortname );
+                            }
+                            unset($options['synonymsync_donotsync_' . $shortname]);
                         }
                     }
                 }    
@@ -118,10 +110,21 @@ class Main {
         }
 
         if ( !$domains ){
+            // unset this option because $api->getDomains() checks isset(..) because of asort(..)
             unset( $options['registeredDomains'] );
         } else {
             $options['registeredDomains'] = $domains;
         }
+
+        // we don't need these temporary fields to be stored in database table options
+        // domains are stored as shortname and url in registeredDomains
+        // donotsync is stored in synonymsync_donotsync_<SHORTNAME>
+        unset($options['synonymdoms_new_name']);
+        unset($options['synonymdoms_new_url']);
+        unset($options['synonymsync_shortname']);
+        unset($options['synonymsync_url']);
+        unset($options['synonymsync_donotsync']);
+        unset($options['synonymsync_hr']);
 
         return $options;
     }

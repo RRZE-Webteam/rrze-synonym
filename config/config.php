@@ -143,7 +143,7 @@ function getFields() {
         	[
           		'name' => 'synonymlogfile',
           		'type' => 'logfile',
-          		'default' => synonymlogFILE
+          		'default' => SYNONYMLOGFILE
         	]
       	]
 	];
@@ -200,17 +200,17 @@ function getShortcodeSettings(){
 function logIt( $msg ){
 	date_default_timezone_set('Europe/Berlin');
 	$msg = date("Y-m-d H:i:s") . ' | ' . $msg;
-	if ( file_exists( synonymlogFILE ) ){
-		$content = file_get_contents( synonymlogFILE );
+	if ( file_exists( SYNONYMLOGFILE ) ){
+		$content = file_get_contents( SYNONYMLOGFILE );
 		$content = $msg . "\n" . $content;
 	}else {
 		$content = $msg;
 	}
-	file_put_contents( synonymlogFILE, $content, LOCK_EX);
+	file_put_contents( SYNONYMLOGFILE, $content, LOCK_EX);
 }
   
 function deleteLogfile(){
-	unlink( synonymlogFILE );
+	unlink( SYNONYMLOGFILE );
 }
   
 

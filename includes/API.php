@@ -10,25 +10,48 @@ class API {
 
     private $aAllCats = array();
 
-    protected function checkDomain( &$url ){
-        // checks if ENDPOINT exists at $url, if HTTP-status is 200
-        // returns (redirected) URL or FALSE  
-        $ret = FALSE;
-        $request = wp_remote_get( $url . SYNONYM_ENDPOINT . '?per_page=1' );
-        $status_code = wp_remote_retrieve_response_code( $request );
+    public function setDomain( $shortname, $url, $domains ){
+        // returns array('status' => TRUE, 'ret' => array(cleanShortname, cleanUrl)
+        // on error returns array('status' => FALSE, 'ret' => error-message)
+        $aRet = array( 'status' => FALSE, 'ret' => '' );
+        $cleanUrl = trailingslashit( preg_replace( "/^((http|https):\/\/)?/i", "https://", $url ) );
+        $cleanShortname = strtolower( preg_replace('/[^A-Za-z0-9]/', '', $shortname ) );
 
-        if ( $status_code == '200' ){
-            $content = json_decode( wp_remote_retrieve_body( $request ), TRUE );
-            $ret = substr( $content[0]['link'], 0 , strpos( $content[0]['link'], '/synonym' ) ) . '/';
+        if ( in_array( $cleanUrl, $domains )){
+            $aRet['ret'] = $url . __( ' is already in use.', 'rrze-faq' );
+            return $aRet;
+        }elseif ( array_key_exists( $cleanShortname, $domains )){
+            $aRet['ret'] = $cleanShortname . __( ' is already in use.', 'rrze-faq' );
+            return $aRet;
+        }else{
+            $request = wp_remote_get( $cleanUrl . ENDPOINT . '?per_page=1' );
+            $status_code = wp_remote_retrieve_response_code( $request );
+
+            if ( $status_code != '200' ){
+                $aRet['ret'] = $cleanUrl . __( ' is not valid.', 'rrze-faq' );
+                return $aRet;
+            }else{
+                $content = json_decode( wp_remote_retrieve_body( $request ), TRUE );
+
+                if ($content){
+                    $cleanUrl = substr( $content[0]['link'], 0 , strpos( $content[0]['link'], '/faq' ) ) . '/';
+                }else{
+                    $aRet['ret'] = $cleanUrl . __( ' is not valid.', 'rrze-faq' );
+                    return $aRet;    
+                }
+            } 
         }
-        return $ret;
+
+        $aRet['status'] = TRUE;
+        $aRet['ret'] = array( 'cleanShortname' => $cleanShortname, 'cleanUrl' => $cleanUrl );
+        return $aRet;
     }
 
     protected function isRegisteredDomain( &$url ){
         return in_array( $url, $this->getDomains() );
     }
 
-    public static function getDomains(){
+    public function getDomains(){
         $domains = array();
         $options = get_option( 'rrze-synonym' );
         if ( isset( $options['registeredDomains'] ) ){
@@ -40,25 +63,7 @@ class API {
         return $domains;
     }
     
-    public function setDomain( &$shortname, &$url ){
-        $ret = FALSE;
-        $url = trailingslashit( preg_replace( "/^((http|https):\/\/)?/i", "https://", $url ) );
-        $domains = $this->getDomains();
-        $shortname = strtolower( preg_replace('/[^A-Za-z0-9\-]/', '', str_replace( ' ', '-', $shortname ) ) );
-        if ( ( in_array( $url, $domains ) === FALSE ) && ( array_key_exists( $shortname, $domains ) === FALSE ) ) {
-            $url = $this->checkDomain( $url );
-            if ( $url ){
-                $domains[$shortname] = $url;
-            }else{
-                return FALSE;
-            }
-        }
-        return $domains;
-    }
 
-    public function deleteDomain( &$shortname ){
-        $this->deleteSynonyms( $shortname );
-    }
 
 
 
