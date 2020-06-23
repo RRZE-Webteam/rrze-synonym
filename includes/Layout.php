@@ -27,7 +27,7 @@ class Layout {
 
         // show content in box if not editable ( = source is not "website" )
         add_action( 'admin_menu', [$this, 'toggleEditor'] );
-        
+
         // Table "All synonym"
         add_filter( 'manage_synonym_posts_columns', [$this, 'addColumns'] );        
         add_action( 'manage_synonym_posts_custom_column', [$this, 'getColumnsValues'], 10, 2 );
@@ -46,7 +46,11 @@ class Layout {
         global $post;
     
         if ( 'synonym' === $post->post_type ) {
-            $template = dirname( __FILE__ ) . '/../templates/single-synonym.php';
+            if ( $theme_file = locate_template(array('single-synonym.php'))) {
+                $template = $theme_file;
+            } else {
+                $template = dirname( __FILE__ ) . '/../templates/single-synonym.php';
+            }
         }
   
         return $template;
@@ -56,7 +60,11 @@ class Layout {
         global $post;
     
         if ( 'synonym' === $post->post_type ) {
-            $template = dirname( __FILE__ ) . '/../templates/archive-synonym.php';
+            if ( $theme_file = locate_template(array('archive-synonym.php'))) {
+                $template = $theme_file;
+            } else {
+                $template = dirname( __FILE__ ) . '/../templates/archive-synonym.php';
+            }
         }
   
         return $template;
