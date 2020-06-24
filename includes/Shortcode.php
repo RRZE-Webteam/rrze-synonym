@@ -82,16 +82,17 @@ class Shortcode {
                 break;
                 case 'synonym'  :
                     foreach( $myPosts as $post ){
-                        $output .= '<div class="synonym">';
-                        $output .= '<h2 class="small">' . html_entity_decode( $post->post_title ) . '</h2>';
-                        $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
-                        $output .= '<div>';
+                        // $output .= '<div class="synonym">';
+                        // $output .= '<h2 class="small">' . html_entity_decode( $post->post_title ) . '</h2>';
+                        // $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
+                        // $output .= '<div>';
+                        $output .= get_post_meta( $post->ID, 'synonym', TRUE );
                     }
                 break;
             }
-            if ( count( $myPosts ) > 1 ){
-                $output = '<div class="synonym-outer">' . $output . '</div>';
-            }
+            // if ( count( $myPosts ) > 1 ){
+            //     $output = '<div class="synonym-outer">' . $output . '</div>';
+            // }
         }
         return $output;
     }
