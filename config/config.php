@@ -178,7 +178,7 @@ function getShortcodeSettings(){
 			'label' => __( 'Synonym', 'rrze-synonym' ),
 			'type' => 'number'
 		],
-		'gutenberg_shortcode_tag' => [
+		'gutenberg_shortcode_type' => [
 			'values' => [
 				'fau_abbr' => __( 'Abbreviation', 'rrze-synonym' ), // Abkürzung
 				'synonym' => __( 'Longform', 'rrze-synonym' ) // Ausgeschriebene Form

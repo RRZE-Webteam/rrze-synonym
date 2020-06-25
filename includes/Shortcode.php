@@ -47,6 +47,12 @@ class Shortcode {
 
     public function shortcodeOutput( $atts, $content = "", $shortcode_tag = "" ) {
         $myPosts = FALSE;
+
+        // in case shortcode is used with slug although Gutenberg is enabled, we need to store the given value because slug has been unset() in fillGutenbergOptions() for usability reasons
+        if (isset($atts['slug'])){
+            $slug = $atts['slug'];
+        }
+
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){
@@ -55,8 +61,8 @@ class Shortcode {
             }
         }
         $atts = shortcode_atts( $atts_default, $atts );        
-        extract( $atts );
 
+        extract( $atts );
 
         if ( isset( $slug ) && $slug ){
             $myPosts = array( $this->getPostBySlug( $slug ) );
@@ -69,7 +75,7 @@ class Shortcode {
 
         if ( $shortcode_tag == '' ){
             // Gutenberg
-            $shortcode_tag = $gutenberg_shortcode_tag;
+            $shortcode_tag = $gutenberg_shortcode_type;
         }
 
         $output = '';
@@ -136,7 +142,6 @@ class Shortcode {
                 return;
             }
         }
-
 
         $this->settings = $this->fillGutenbergOptions();
 
