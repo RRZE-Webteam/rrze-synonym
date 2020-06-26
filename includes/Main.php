@@ -71,9 +71,13 @@ class Main {
     public function switchTask( $options ) {
         $api = new API();
         $domains = $api->getDomains();
-        
+
         // get stored options because they are generated and not defined in config.php
-        $options = array_merge(get_option( 'rrze-synonym' ), $options);
+        $storedOptions = get_option( 'rrze-synonym' );
+        if (is_array($storedOptions)){
+            $options = array_merge($storedOptions, $options);
+        }
+
         $tab = ( isset($_GET['synonymdoms'] ) ? 'synonymdoms' : ( isset( $_GET['sync'] ) ? 'sync' : ( isset( $_GET['del'] ) ? 'del' : '' ) ) );
 
         switch ( $tab ){
@@ -83,7 +87,7 @@ class Main {
                     $aRet = $api->setDomain( $options['synonymdoms_new_name'], $options['synonymdoms_new_url'], $domains );
 
                     if ( $aRet['status'] ){
-                        // url is correct, RRZE-FAQ at given url is in use and shortname is new
+                        // url is correct, RRZE-Synonym at given url is in use and shortname is new
                         $domains[$aRet['ret']['cleanShortname']] = $aRet['ret']['cleanUrl'];
                     }else{
                         add_settings_error( 'synonymdoms_new_url', 'synonymdoms_new_error', $aRet['ret'], 'error' );        
