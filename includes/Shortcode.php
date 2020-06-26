@@ -82,23 +82,34 @@ class Shortcode {
         if ( $myPosts ){
             switch( $shortcode_tag ){
                 case 'fau_abbr'  :
-                    foreach( $myPosts as $post ){
-                        $output .= '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. html_entity_decode( $post->post_title ) . '</abbr>';
+                    if (count($myPosts) == 1 ){
+                        $post = $myPosts[0];
+                        $output = '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. html_entity_decode( $post->post_title ) . '</abbr>';
+                    }else{
+                        foreach( $myPosts as $post ){
+                            $output .= '<div class="fau_abbr">';
+                            $output .= '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. html_entity_decode( $post->post_title ) . '</abbr>';
+                            $output .= '</div>';
+                        }
                     }
                 break;
                 case 'synonym'  :
-                    foreach( $myPosts as $post ){
-                        // $output .= '<div class="synonym">';
-                        // $output .= '<h2 class="small">' . html_entity_decode( $post->post_title ) . '</h2>';
-                        // $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
-                        // $output .= '<div>';
-                        $output .= get_post_meta( $post->ID, 'synonym', TRUE );
+                    if (count($myPosts) == 1 ){
+                        $post = $myPosts[0];
+                        $output = get_post_meta( $post->ID, 'synonym', TRUE );
+                    }else{
+                        foreach( $myPosts as $post ){
+                            $output .= '<div class="synonym">';
+                            $output .= '<h2 class="small">' . html_entity_decode( $post->post_title ) . '</h2>';
+                            $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
+                            $output .= '<div>';
+                        }
                     }
                 break;
             }
-            // if ( count( $myPosts ) > 1 ){
-            //     $output = '<div class="synonym-outer">' . $output . '</div>';
-            // }
+            if ( count( $myPosts ) > 1 ){
+                $output = '<div class="synonym-outer">' . $output . '</div>';
+            }
         }
         return $output;
     }
