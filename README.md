@@ -23,7 +23,7 @@ id : mit diesem Attribut erfolgt die Ausgabe eines Synonyms. Sie finden die ID i
 
 slug : mit diesem Attribut erfolgt die Ausgabe eines Synonyms. Sie finden den slug als letzten Teil des Permalinks, sowie in der Informationsbox "Einfügen in Seiten und Beiträgen" bei jedem Synonym im Bearbeitungsmodus.
 
-Rufen Sie die Shortcodes [[synonym]] oder [[fau_abbr]] ohne Attribute auf, wird eine Liste aller Synonyme ausgeben.  
+Rufen Sie die Shortcodes [synonym] oder [fau_abbr] ohne Attribute auf, wird eine Liste aller Synonyme ausgeben.  
 
 
 ## Synonyme von anderer Domain
