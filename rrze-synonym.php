@@ -4,7 +4,7 @@
 Plugin Name:     RRZE Synonym
 Plugin URI:      https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym
 Description:     Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu synchronisieren und mittels Shortcodes ([synonym ...] und [fau_abbr ...]) oder als Gutenberg Editor Block (Synonym oder Abkürzung = Dropdown) einzubinden.
-Version:         2.8.5
+Version:         2.8.6
 Author:          RRZE Webteam
 Author URI:      https://blogs.fau.de/webworking/
 License:         GNU General Public License v2
@@ -100,12 +100,14 @@ function addMetadata(){
     $lang = substr( get_locale(), 0, 2); // Website-Sprache als default titelLang
 
     foreach( $postIds as $postID ){
-        update_post_meta( $postID, 'source', 'website' );        
-        update_post_meta( $postID, 'remoteID', $postID );
-        // post_meta 'synonym' existiert bereits        
-        update_post_meta( $postID, 'titleLang', $lang );
-        $remoteChanged = get_post_timestamp( $postID, 'modified' );
-        update_post_meta( $postID, 'remoteChanged', $remoteChanged );
+        if (metadata_exists('post', $postID, 'source') === false){
+            update_post_meta( $postID, 'source', 'website' );        
+            update_post_meta( $postID, 'remoteID', $postID );
+            // post_meta 'synonym' existiert bereits        
+            update_post_meta( $postID, 'titleLang', $lang );
+            $remoteChanged = get_post_timestamp( $postID, 'modified' );
+            update_post_meta( $postID, 'remoteChanged', $remoteChanged );
+        }
     }    
 }
 

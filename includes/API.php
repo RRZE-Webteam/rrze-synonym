@@ -162,7 +162,16 @@ class API {
 
     public function getSynonymsRemoteIDs( $source ){
         $aRet = array();
-        $allSynonyms = get_posts( array( 'post_type' => 'synonym', 'meta_key' => 'source', 'meta_value' => $source, 'fields' => 'ids', 'numberposts' => -1 ) );
+        // $allSynonyms = get_posts( array( 'post_type' => 'synonym', 'meta_key' => 'source', 'meta_value' => $source, 'fields' => 'ids', 'numberposts' => -1 ) );
+        $allSynonyms = get_posts(
+            ['post_type' => 'synonym',
+            'meta_key' => 'source',
+            'meta_value' => $source,
+            'nopaging' => true, 
+            'fields' => 'ids'
+            ]
+        );
+    
         foreach ( $allSynonyms as $postID ){
             $remoteID = get_post_meta( $postID, 'remoteID', TRUE );
             $remoteChanged = get_post_meta( $postID, 'remoteChanged', TRUE );
@@ -184,7 +193,7 @@ class API {
 
         // get all synonyms
         $aSynonym = $this->getSynonyms( $url );
-        
+
         // set synonyms
         foreach ( $aSynonym as $synonym ){
             if ( isset( $aRemoteIDs[$synonym['remoteID']] ) ) {
