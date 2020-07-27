@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE Synonym\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-09 12:53+0000\n"
+"POT-Creation-Date: 2020-07-27 11:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -128,7 +128,7 @@ msgstr ""
 msgid "Slug"
 msgstr ""
 
-#: config/config.php:178 includes/CPT.php:26
+#: config/config.php:178
 msgid "Synonym"
 msgstr ""
 
@@ -160,6 +160,10 @@ msgstr ""
 #: includes/CPT.php:25
 msgctxt "Single synonym"
 msgid "synonym"
+msgstr ""
+
+#: includes/CPT.php:26
+msgid "Synonyms"
 msgstr ""
 
 #: includes/CPT.php:27

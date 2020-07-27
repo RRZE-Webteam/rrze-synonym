@@ -123,7 +123,7 @@ class Shortcode {
 
         // fill select id ( = synonym )
         $synonyms = get_posts( array(
-            'posts_per_page'  => -1,
+            'nopaging' => true,
             'post_type' => 'synonym',
             'orderby' => 'title',
             'order' => 'ASC'

@@ -23,7 +23,7 @@ class CPT {
         $labels = array(
                 'name'                => _x( 'synonym', 'synonyms', 'rrze-synonym' ),
                 'singular_name'       => _x( 'synonym', 'Single synonym', 'rrze-synonym' ),
-                'menu_name'           => __( 'Synonym', 'rrze-synonym' ),
+                'menu_name'           => __( 'Synonyms', 'rrze-synonym' ),
                 'add_new'             => __( 'Add synonym', 'rrze-synonym' ),
                 'add_new_item'        => __( 'Add new synonym', 'rrze-synonym' ),
                 'edit_item'           => __( 'Edit synonym', 'rrze-synonym' ),
