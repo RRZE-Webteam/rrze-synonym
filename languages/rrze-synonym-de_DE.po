@@ -1,0 +1,361 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RRZE Synonym\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-27 11:16+0000\n"
+"PO-Revision-Date: 2020-07-27 11:16+0000\n"
+"Last-Translator: \n"
+"Language-Team: Deutsch\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.4.0; wp-5.4.2"
+
+#: rrze-synonym.php:83
+#, php-format
+msgid ""
+"The server is running PHP version %1$s. The Plugin requires at least PHP "
+"version %2$s."
+msgstr ""
+
+#: rrze-synonym.php:86
+#, php-format
+msgid ""
+"The server is running WordPress version %1$s. The Plugin requires at least "
+"WordPress version %2$s."
+msgstr ""
+
+#. Name of the plugin
+#: config/config.php:22 config/config.php:23
+msgid "RRZE Synonym"
+msgstr ""
+
+#: config/config.php:26
+msgid "RRZE Synonym Settings"
+msgstr "RRZE Synonym Einstellungen"
+
+#: config/config.php:39
+msgid "Here comes the Context Help content."
+msgstr ""
+
+#: config/config.php:41
+msgid "Overview"
+msgstr "Übersicht"
+
+#: config/config.php:42
+msgid "For more information"
+msgstr "Weitere Informationen"
+
+#: config/config.php:42
+msgid "RRZE Webteam on Github"
+msgstr ""
+
+#: config/config.php:56
+msgid "Domains"
+msgstr ""
+
+#: config/config.php:60 config/config.php:107
+msgid "Synchronize"
+msgstr "Synchronisieren"
+
+#: config/config.php:64
+msgid "Logfile"
+msgstr "Protokoll"
+
+#: config/config.php:79 config/config.php:93
+msgid "Short name"
+msgstr "Kurzbezeichnung"
+
+#: config/config.php:80
+msgid "Enter a short name for this domain."
+msgstr "Geben Sie eine Kurzbezeichnung für diese Domain ein."
+
+#: config/config.php:85 config/config.php:100
+msgid "URL"
+msgstr ""
+
+#: config/config.php:86
+msgid "Enter the domain's URL you want to receive synonyms from."
+msgstr ""
+"Geben Sie die URL der Domain ein, von der Sie Synonyme beziehen möchten."
+
+#: config/config.php:94
+msgid "Use this name as attribute 'domain' in shortcode [synonym]"
+msgstr ""
+
+#: config/config.php:108
+msgid "Do not synchronize"
+msgstr "Nicht synchronisieren"
+
+#: config/config.php:119
+msgid "Info"
+msgstr ""
+
+#: config/config.php:120 config/config.php:122
+msgid ""
+"All synonyms will be updated or inserted. Synonyms that have been deleted at "
+"the remote website will be deleted on this website, too."
+msgstr ""
+"Alle Synonyme werden aktualisiert oder hinzugefügt. Synonyme, die auf dem "
+"Fremdsystem gelöscht wurden, werden auf dieser Website ebenfalls gelöscht."
+
+#: config/config.php:126
+msgid "Mode"
+msgstr "Modus"
+
+#: config/config.php:127
+msgid "Synchronize automatically"
+msgstr "Automatisch synchronisieren"
+
+#: config/config.php:132
+msgid "Frequency"
+msgstr "Häufigkeit"
+
+#: config/config.php:136
+msgid "daily"
+msgstr "täglich"
+
+#: config/config.php:137
+msgid "twicedaily"
+msgstr "Zwei Mal am Tag"
+
+#: config/config.php:167
+msgid "Find the settings on the right side"
+msgstr ""
+
+#: config/config.php:172
+msgid "Slug"
+msgstr ""
+
+#: config/config.php:178
+msgid "Synonym"
+msgstr "Synonym"
+
+#: config/config.php:183
+msgid "Abbreviation"
+msgstr "Abkürzung"
+
+#: config/config.php:184
+msgid "Longform"
+msgstr "Langform"
+
+#: config/config.php:188
+msgid "Type of output"
+msgstr "Art der Ausgabe"
+
+#: includes/API.php:21 includes/API.php:24
+#, fuzzy
+msgid "is already in use."
+msgstr "wird bereits verwendet."
+
+#: includes/API.php:31 includes/API.php:39
+#, fuzzy
+msgid "is not valid."
+msgstr "ist ungültig."
+
+#: includes/CPT.php:24
+msgctxt "synonyms"
+msgid "synonym"
+msgstr "Synonym"
+
+#: includes/CPT.php:25
+msgctxt "Single synonym"
+msgid "synonym"
+msgstr "Synonym"
+
+#: includes/CPT.php:26
+msgid "Synonyms"
+msgstr "Synonyme"
+
+#: includes/CPT.php:27
+msgid "Add synonym"
+msgstr "Synonym hinzufügen"
+
+#: includes/CPT.php:28
+msgid "Add new synonym"
+msgstr "Neues Synonym hinzufügen"
+
+#: includes/CPT.php:29
+msgid "Edit synonym"
+msgstr "Synonym editieren"
+
+#: includes/CPT.php:30
+msgid "All synonyms"
+msgstr "Alle Synonyme"
+
+#: includes/CPT.php:31
+msgid "Search synonym"
+msgstr "Synonym suchen"
+
+#: includes/CPT.php:40
+msgid "synonym"
+msgstr "Synonym"
+
+#: includes/CPT.php:41
+msgid "Synonym informations"
+msgstr "Synonym Informationen"
+
+#: includes/Layout.php:10
+msgid "German"
+msgstr "Deutsch"
+
+#: includes/Layout.php:11
+msgid "English"
+msgstr "Englisch"
+
+#: includes/Layout.php:12
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: includes/Layout.php:13
+msgid "French"
+msgstr "Französisch"
+
+#: includes/Layout.php:14
+msgid "Russian"
+msgstr "Russisch"
+
+#: includes/Layout.php:15
+msgid "Chinese"
+msgstr "Chinesisch"
+
+#: includes/Layout.php:90 includes/Layout.php:187
+msgid "Full form"
+msgstr "Langform"
+
+#: includes/Layout.php:92
+msgid "Pronunciation"
+msgstr "Aussprache"
+
+#: includes/Layout.php:118
+msgid "Properties"
+msgstr "Eigenschaften"
+
+#: includes/Layout.php:127
+msgid "Integration in pages and posts"
+msgstr "Einfügen in Seiten und Beiträgen"
+
+#: includes/Layout.php:151
+msgid "This synonym cannot be edited because it is synchronized"
+msgstr ""
+"Dieses Synonym kann nicht editiert werden, weil es synchronisiert wurde"
+
+#: includes/Layout.php:151
+msgid "You can edit it at the source"
+msgstr "Sie können es auf der Quelle editieren"
+
+#: includes/Layout.php:164 includes/Layout.php:170
+msgid "Source"
+msgstr "Quelle"
+
+#: includes/Layout.php:165 includes/Layout.php:171
+msgid "ID"
+msgstr ""
+
+#: includes/Layout.php:189
+msgid ""
+"Enter here the long, written form of the synonym. This text will later "
+"replace the shortcode. Attention: Breaks or HTML statements are not accepted."
+msgstr ""
+"Geben Sie hier die lange, ausgeschriebene Form des Synonyms ein. Mit diesem "
+"Text wird dann im späteren Gebrauch der verwendete Shortcode ersetzt. "
+"Achtung: Umbrüche oder HTML-Anweisungen werden nicht übernommen."
+
+#: includes/Layout.php:199
+msgid "Choose the language in which the long form is pronounced."
+msgstr "Wählen Sie die Sprache, in der die Langform ausgesprochen wird."
+
+#: includes/Main.php:175
+msgid "Next automatically synchronization:"
+msgstr "Nächste automatische Synchronisation:"
+
+#: includes/Settings.php:296
+msgid "Add domain"
+msgstr "Domain hinzufügen"
+
+#: includes/Settings.php:300
+msgid "Delete logfile"
+msgstr "Protokoll löschen"
+
+#: includes/Settings.php:340
+msgid ""
+"Please note: \"Delete selected domains\" will DELETE every synonym on this "
+"website that has been fetched from the selected domains."
+msgstr ""
+"Bitte beachten: \"Ausgewählte Domains löschen\" LÖSCHT alle Synonyme auf "
+"dieser Website, die von den ausgewählten Domains bezogen wurden."
+
+#: includes/Settings.php:341
+msgid "Delete selected domains"
+msgstr "Ausgewählte Domains löschen"
+
+#: includes/Settings.php:932 includes/Settings.php:935
+msgid "Logfile is empty."
+msgstr "Protokoll ist leer."
+
+#: includes/Shortcode.php:134
+msgid "-- all --"
+msgstr "-- alle --"
+
+#: includes/Sync.php:29
+msgid "Domain"
+msgstr ""
+
+#: includes/Sync.php:29
+msgid "Synchronization completed."
+msgstr "Synchronisierung abgeschlossen."
+
+#: includes/Sync.php:29
+msgid "new"
+msgstr "neu"
+
+#: includes/Sync.php:29
+msgid " updated"
+msgstr "aktualisiert"
+
+#: includes/Sync.php:29
+msgid "and"
+msgstr "und"
+
+#: includes/Sync.php:29
+msgid "deleted"
+msgstr "gelöscht"
+
+#: includes/Sync.php:29 includes/Sync.php:38
+msgid "Required time:"
+msgstr "Benötogte Zeit:"
+
+#: includes/Sync.php:29 includes/Sync.php:38
+msgid "seconds"
+msgstr "Sekunden"
+
+#: includes/Sync.php:38
+msgid "All synchronizations completed"
+msgstr "Alle Synchronisierungen sind abgeschlossen."
+
+#: includes/Sync.php:40
+msgid "Settings updated"
+msgstr "Einstellungen gespeichert"
+
+#. Description of the plugin
+msgid ""
+"Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu "
+"synchronisieren und mittels Shortcodes ([synonym ...] und [fau_abbr ...]) "
+"oder als Gutenberg Editor Block (Synonym oder Abkürzung = Dropdown) "
+"einzubinden."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym"
+msgstr ""
+
+#. Author of the plugin
+msgid "RRZE Webteam"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://blogs.fau.de/webworking/"
+msgstr ""

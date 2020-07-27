@@ -1,30 +1,37 @@
-# rrze-synonym
-WordPress-Plugin: Shortcode zur Einbindung von eigenen Synonymen sowie von Synonymen aus dem FAU-Netzwerk 
+# RRZE-Synonym
+WordPress-Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu synchronisieren und mittels Shortcodes ([synonym ...] und [fau_abbr ...]) oder als Gutenberg Editor Block (Synonym oder Abkürzung = Dropdown) einzubinden.
 
-## Allgemeins
+## Allgemeines
 
-Die Möglichkeit eigene Synonyme zu definieren ist nun in ein eigenes Plugin ausgelagert worden.
-Weiterhin können Synonyme wie gewohnt im Backend unter dem Menüpunkt Synonyme angelegt werden.
-Darüber hinaus können nun auch Synonyme von anderen Domains eingebunden werden.
+Das Plugin kann genutzt werden, um Synonyme zu erstellen und Synonyme von Websites aus dem FAU-Netzwerk zu synchronisieren. Die Ausgabe kann wahlweise als reine Langform oder als Akronym-Tag erfolgen, bei dem die Aussprache der Langform unabhängig von der des Akronyms bei der Erstellung des Synonyms definiert werden kann. Beispiel: <abbr title="Universal Resource Locator" lang="en">URL</abbr> da "Universal Resource Locator" im Gegensatz zu "URL" auf einer deutschsprachigen Website Englisch ausgesprochen wird.
 
-## Verwendung des Shortcodes (wie bisher)
+## Verwendung der Shortcodes
 
 ```html
-[synonym id="2215687"]
-[synonym slug="fau"]
+[synonym id="123"] 
+[synonym slug="bildungsministerium"] 
+[synonym] 
+[fau_abbr id="987"] 
+[fau_abbr slug="url"] 
+[fau_abbr] 
 ```
 
-## Erweiterung des Shortcodes (Synonyme von anderen Domains)
 
-Um diesen Dienst zu verwenden muss die gewünschte Domain hinzugefügt werden.
-Danach wird im Backend automatisch eine Liste der vorhandenen Synonyme dieser Domain erstellt. __(Menüpunkt Zeige Server Synonyme)__
+## Erklärungen und Werte zu den Attributen des Shortcodes
 
-Der Shortcode wurde um den Paramter rest und domain erweitert.<br/>
-Die Domain-Id sehen Sie unter dem Menüpunkt - __Alle Domains__ - bei der jeweiligen Domain.
+id : mit diesem Attribut erfolgt die Ausgabe eines Synonyms. Sie finden die ID in der rechten Spalte unter "Synonyme"->"Alle Synonyme" sowie in der Informationsbox "Einfügen in Seiten und Beiträgen" bei jedem Synonym im Bearbeitungsmodus.
 
-Den Slug und die jeweilige Id für das Synonym können Sie der Liste unter dem Menüpunkt - __Zeige Server Synonyme__ - entnehmen.
+slug : mit diesem Attribut erfolgt die Ausgabe eines Synonyms. Sie finden den slug als letzten Teil des Permalinks, sowie in der Informationsbox "Einfügen in Seiten und Beiträgen" bei jedem Synonym im Bearbeitungsmodus.
 
-```html
-[synonym rest="1" domain="1" id="10"]
-[synonym rest="1" domain="2" slug="site2"]
-```
+Rufen Sie die Shortcodes [synonym] oder [fau_abbr] ohne Attribute auf, wird eine Liste aller Synonyme ausgeben.  
+
+
+## Synonyme von anderer Domain
+
+Hierzu muss die gewünschte Domain über den Menüpunkt "Einstellungen" -> "RRZE Synonym" -> Tab "Domains" hinzugefügt werden.
+Das Synchronisieren kann über den Menüpunkt "Einstellungen" -> "RRZE Synonym" -> Tab "Synchonisierung" vorgenommen werden.
+Synchronisierte Synonyme können nun wie selbst erstellte Synonyme mit dem Shortcode oder im Gutenberg Editor als Block ausgegeben werden.
+
+
+
+
