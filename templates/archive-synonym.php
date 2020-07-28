@@ -33,12 +33,17 @@ if ($fau) {
 		<main id="main" class="site-main">
 <?php }
 
-while ( have_posts() ){
-    the_post();
-    the_title();
-    echo '<br>';
-    echo '<strong>' . get_post_meta( get_the_ID(), 'synonym', TRUE ) . '</strong><br>';
-    echo '---- <br>';
+echo '<h2>'. __('Synonyms','rrze-synonym') . '</h2>';
+if (have_posts()) {
+    echo '<table class="synonym">';
+    while ( have_posts() ){
+        the_post();
+        echo '<tr>';
+        echo '<th scope="row">' . get_the_title() . '</th>' ;
+        echo '<td>' . get_post_meta( get_the_ID(), 'synonym', TRUE ) . '</td>';
+        echo '</tr>';
+    }
+    echo '</table>';
 }
 
 if ($fau) { ?>
