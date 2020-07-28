@@ -2,22 +2,14 @@
 /* 
 Template Name: CPT synonym Archive Template
 */
+use RRZE\Synonym\Layout;
 
-$fau_themes = [
-    'FAU-Einrichtungen',
-    'FAU-Einrichtungen-BETA',
-    'FAU-Medfak',
-    'FAU-RWFak',
-    'FAU-Philfak',
-    'FAU-Techfak',
-    'FAU-Natfak'
-];
 $theme = wp_get_theme();
-$fau = in_array($theme->Name, $fau_themes) ? true : false;
+$isFauTheme = in_array($theme->Name, FAUTHEMES);
 
 get_header();
 
-if ($fau) {
+if ($isFauTheme) {
     get_template_part('template-parts/hero', 'index'); ?>
     <div id="content">
         <div class="container">
@@ -40,13 +32,13 @@ if (have_posts()) {
         the_post();
         echo '<tr>';
         echo '<th scope="row">' . get_the_title() . '</th>' ;
-        echo '<td>' . get_post_meta( get_the_ID(), 'synonym', TRUE ) . '</td>';
+        echo '<td>' . get_post_meta( $post->ID, 'synonym', TRUE ) . Layout::getPronunciation($post->ID) . '</td>';
         echo '</tr>';
     }
     echo '</table>';
 }
 
-if ($fau) { ?>
+if ($isFauTheme) { ?>
                     </main>
                 </div>
             </div>
