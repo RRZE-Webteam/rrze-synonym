@@ -98,7 +98,7 @@ class Main {
                         if ( substr( $key, 0, 11 ) === "del_domain_" ){
                             if (($shortname = array_search($url, $domains)) !== false) {
                                 unset($domains[$shortname]);
-                                $api->deleteSynonym( $shortname );
+                                $api->deleteSynonyms( $shortname );
                             }
                             unset($options['synonymsync_donotsync_' . $shortname]);
                         }
