@@ -8,7 +8,7 @@ function createBlock() {
 	const { serverSideRender } = wp;
 
 	const phpConfig = eval( blockname + 'Config;' ); 
-	
+
 
 	registerBlockType( phpConfig.block.blocktype, {
 		title: phpConfig.block.title,
@@ -36,6 +36,7 @@ function createBlock() {
 				}
 			}
 			
+
 	
 			if ( ( props['isSelected'] === false ) && ( edited === true ) ){
 				clean( att );
@@ -58,9 +59,19 @@ function createBlock() {
 							break;
 						case 'multi_select': 
 						case 'select': 
-							var opts = [];
+							// sort by value case-insensitively
+							var sortable = [];
 							for ( var v in phpConfig[fieldname]['values'] ){
-								opts.push( JSON.parse( '{"value":"' + v + '", "label":"' + phpConfig[fieldname]['values'][v] + '"}' ) );
+								sortable.push([v, phpConfig[fieldname]['values'][v]]);
+							}
+							sortable.sort(function (a, b) {
+								a = a[1];
+								b = b[1];
+								return a.toLowerCase().localeCompare(b.toLowerCase());
+							});
+							var opts = [];
+							for ( var i = 0; i < sortable.length; i++ ){
+								opts.push( JSON.parse( '{"value":"' + sortable[i][0] + '", "label":"' + sortable[i][1] + '"}' ) );
 							}
 							ret.push( createElement( SelectControl, { multiple: ( phpConfig[fieldname]['field_type'] == 'multi_select' ? 1 : 0 ), value: att[fieldname], label: phpConfig[fieldname]['label'], type: phpConfig[fieldname]['type'], onChange: changeField.bind( fieldname ), options: opts } ) );
 							break;
