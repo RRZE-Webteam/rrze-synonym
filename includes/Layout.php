@@ -15,7 +15,17 @@ define( 'DEFAULTLANGCODES', array(
     "zh" => __('Chinese','rrze-synonym'),
     ));
 
-/**
+define( 'FAUTHEMES', array(
+    'FAU-Einrichtungen',
+    'FAU-Einrichtungen-BETA',
+    'FAU-Medfak',
+    'FAU-RWFak',
+    'FAU-Philfak',
+    'FAU-Techfak',
+    'FAU-Natfak'
+    ));
+    
+    /**
  * Layout settings for "synonym"
  */
 class Layout {
@@ -23,7 +33,7 @@ class Layout {
     public function __construct() {
         add_action( 'add_meta_boxes', [$this, 'addSynonymMetaboxes'], 10 );
 
-        add_filter( 'pre_get_posts', [$this, 'makeSortable'] );
+        add_filter( 'pre_get_posts', [$this, 'orderByTitle'] );
 
         // show content in box if not editable ( = source is not "website" )
         add_action( 'admin_menu', [$this, 'toggleEditor'] );
@@ -41,6 +51,13 @@ class Layout {
         add_filter( 'archive_template', [$this, 'getSynonymArchiveTemplate'] );
     }
 
+
+    static function getPronunciation($post_id){
+        // returns the language in which the long form is pronounced 
+        // returns '' if it is different to the website's language
+        $lang = get_post_meta($post_id, 'titleLang', TRUE);
+        return ($lang == substr( get_locale(), 0, 2) ? '' : ' (' . __('Pronunciation', 'rrze-synonym') . ': ' . DEFAULTLANGCODES[$lang] . ')');
+    }
 
     public function getSynonymSingleTemplate( $template ) {
         global $post;
@@ -70,14 +87,13 @@ class Layout {
         return $template;
     }
 
-    public function makeSortable( $wp_query ) {
-        if ( is_admin() ) {    
-            $post_type = $wp_query->query['post_type'];    
-            if ( $post_type == 'synonym') {
-                if( ! isset($wp_query->query['orderby'])) {
-                    $wp_query->set('orderby', 'title');
-                    $wp_query->set('order', 'ASC');
-                }
+    public function orderByTitle( $wp_query ) {
+        $post_type = $wp_query->query['post_type'];
+        if ( $post_type == 'synonym') {
+            if( ! isset($wp_query->query['orderby'])) {
+                $wp_query->set('orderby', 'title');
+                $wp_query->set('order', 'ASC');
+                $wp_query->set('nopaging', true);
             }
         }
     }
