@@ -15,15 +15,16 @@ define( 'DEFAULTLANGCODES', array(
     "zh" => __('Chinese','rrze-synonym'),
     ));
 
-define( 'FAUTHEMES', array(
+const FAUTHEMES = array(
     'FAU-Einrichtungen',
     'FAU-Einrichtungen-BETA',
     'FAU-Medfak',
     'FAU-RWFak',
     'FAU-Philfak',
     'FAU-Techfak',
-    'FAU-Natfak'
-    ));
+    'FAU-Natfak',
+    'FAU-Blog'
+    );
     
     /**
  * Layout settings for "synonym"
