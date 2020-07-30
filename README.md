@@ -3,7 +3,7 @@ WordPress-Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu
 
 ## Allgemeines
 
-Das Plugin kann genutzt werden, um Synonyme zu erstellen und Synonyme von Websites aus dem FAU-Netzwerk zu synchronisieren. Die Ausgabe kann wahlweise als reine Langform oder als Akronym-Tag erfolgen, bei dem die Aussprache der Langform unabhängig von der des Akronyms bei der Erstellung des Synonyms definiert werden kann. Beispiel: <abbr title="Universal Resource Locator" lang="en">URL</abbr> da "Universal Resource Locator" im Gegensatz zu "URL" auf einer deutschsprachigen Website Englisch ausgesprochen wird.
+Das Plugin kann genutzt werden, um Synonyme zu erstellen und Synonyme von Websites aus dem FAU-Netzwerk zu synchronisieren. Die Ausgabe kann wahlweise als reine Langform oder als Akronym-Tag erfolgen, bei dem die Aussprache der Langform unabhängig von der des Akronyms bei der Erstellung des Synonyms definiert werden kann. Beispiel: <abbr title="Universal Resource Locator" lang="en">URL</abbr> da "Universal Resource Locator" im Gegensatz zu "URL" auf einer deutschsprachigen Website Englisch ausgesprochen wird. Eine Übersicht über alle Synonyme finden Sie unter Ihre-Website/synonym mit Angabe der Aussprache bei den Einträgen, die sich von der Sprache Ihrer Website unterscheiden.
 
 ## Verwendung der Shortcodes
 

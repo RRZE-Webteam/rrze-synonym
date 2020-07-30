@@ -5,31 +5,17 @@ namespace RRZE\Synonym;
 defined( 'ABSPATH' ) || exit;
 
 use RRZE\Synonym\API;
+use function RRZE\Synonym\Config\getConstants;
 
-define( 'DEFAULTLANGCODES', array(
-    "de" => __('German','rrze-synonym'),
-    "en" => __('English','rrze-synonym'),
-    "es" => __('Spanish','rrze-synonym'),
-    "fr" => __('French','rrze-synonym'),
-    "ru" => __('Russian','rrze-synonym'),
-    "zh" => __('Chinese','rrze-synonym'),
-    ));
 
-const FAUTHEMES = array(
-    'FAU-Einrichtungen',
-    'FAU-Einrichtungen-BETA',
-    'FAU-Medfak',
-    'FAU-RWFak',
-    'FAU-Philfak',
-    'FAU-Techfak',
-    'FAU-Natfak',
-    'FAU-Blog'
-    );
     
-    /**
+/**
  * Layout settings for "synonym"
  */
 class Layout {
+
+    protected $constants;
+
 
     public function __construct() {
         add_action( 'add_meta_boxes', [$this, 'addSynonymMetaboxes'], 10 );
@@ -50,14 +36,30 @@ class Layout {
         // add templates for CPT synonym
         add_filter( 'single_template', [$this, 'getSynonymSingleTemplate'] );
         add_filter( 'archive_template', [$this, 'getSynonymArchiveTemplate'] );
+
+        $this->constants = getConstants();
     }
 
-
-    static function getPronunciation($post_id){
+    public static function isFAUTheme() {
+        $constants = getConstants();
+        $themelist = $constants['fauthemes'];
+        $fautheme = false;
+        $active_theme = wp_get_theme();
+        $active_theme = $active_theme->get( 'Name' );
+        if (in_array($active_theme, $themelist)) {
+            $fautheme = true;
+        }
+        return $fautheme;   
+    }
+    
+    public static function getPronunciation($post_id){
         // returns the language in which the long form is pronounced 
         // returns '' if it is different to the website's language
+        $constants = getConstants();
+        $langlist = $constants['langcodes'];
+
         $lang = get_post_meta($post_id, 'titleLang', TRUE);
-        return ($lang == substr( get_locale(), 0, 2) ? '' : ' (' . __('Pronunciation', 'rrze-synonym') . ': ' . DEFAULTLANGCODES[$lang] . ')');
+        return ($lang == substr( get_locale(), 0, 2) ? '' : ' (' . __('Pronunciation', 'rrze-synonym') . ': ' . $langlist[$lang] . ')');
     }
 
     public function getSynonymSingleTemplate( $template ) {
@@ -88,13 +90,16 @@ class Layout {
         return $template;
     }
 
+
     public function orderByTitle( $wp_query ) {
-        $post_type = $wp_query->query['post_type'];
-        if ( $post_type == 'synonym') {
-            if( ! isset($wp_query->query['orderby'])) {
-                $wp_query->set('orderby', 'title');
-                $wp_query->set('order', 'ASC');
-                $wp_query->set('nopaging', true);
+        if ( $wp_query->is_main_query() ) {
+            $post_type = $wp_query->query['post_type'];
+            if ( $post_type == 'synonym') {
+                if( ! isset($wp_query->query['orderby'])) {
+                    $wp_query->set('orderby', 'title');
+                    $wp_query->set('order', 'ASC');
+                    $wp_query->set('nopaging', true);
+                }
             }
         }
     }
@@ -106,7 +111,7 @@ class Layout {
         $output .= '<h1>' . html_entity_decode( $post->post_title ) . '</h1><br>';
         $output .= '<strong>' . __( 'Full form', 'rrze-synonym') . ':</strong>';
         $output .= '<p>' . $fields['synonym'] . '</p>';
-        $output .= '<p><i>' . __( 'Pronunciation', 'rrze-synonym' ) . ': ' . DEFAULTLANGCODES[$fields['titleLang']] . '</i></p>';
+        $output .= '<p><i>' . __( 'Pronunciation', 'rrze-synonym' ) . ': ' . $this->constants['langcodes'][$fields['titleLang']] . '</i></p>';
 
         echo $output;
     }
@@ -208,7 +213,7 @@ class Layout {
         // langTitle
         $selectedLang = ( $fields['titleLang'] ? $fields['titleLang'] : substr( get_locale(), 0, 2) );
         $output .= '<br><select class="" id="titleLang" name="titleLang">';
-        foreach( DEFAULTLANGCODES as $lang => $desc ){
+        foreach( $this->constants['langcodes'] as $lang => $desc ){
             $selected = ( $lang == $selectedLang ? ' selected' : '' );
             $output .= '<option value="' . $lang . '"' . $selected . '>' . $desc . '</option>';
         }

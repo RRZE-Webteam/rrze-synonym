@@ -4,12 +4,11 @@ Template Name: CPT synonym Archive Template
 */
 use RRZE\Synonym\Layout;
 
-$theme = wp_get_theme();
-$isFauTheme = in_array($theme->Name, FAUTHEMES);
+$bFAUTheme = Layout::isFAUTheme();
 
 get_header();
 
-if ($isFauTheme) {
+if ($bFAUTheme) {
     get_template_part('template-parts/hero', 'index'); ?>
     <div id="content">
         <div class="container">
@@ -38,7 +37,7 @@ if (have_posts()) {
     echo '</table>';
 }
 
-if ($isFauTheme) { ?>
+if ($bFAUTheme) { ?>
                     </main>
                 </div>
             </div>

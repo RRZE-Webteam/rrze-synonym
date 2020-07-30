@@ -4,14 +4,13 @@ Template Name: CPT synonym Single Template
 */
 use RRZE\Synonym\Layout;
 
-$theme = wp_get_theme();
-$isFauTheme = in_array($theme->Name, FAUTHEMES);
+$bFAUTheme = Layout::isFAUTheme();
 
 get_header();
 
 global $post;
 
-if ($isFauTheme) {
+if ($bFAUTheme) {
     get_template_part('template-parts/hero', 'small'); ?>
     <main id="content">
         <div class="container">
@@ -32,7 +31,7 @@ echo '<strong>' . $post->post_title . '</strong><br>';
 echo get_post_meta( $post->ID, 'synonym', TRUE ) . Layout::getPronunciation($post->ID);
 echo '</div>';
 
-if ($isFauTheme) { ?>
+if ($bFAUTheme) { ?>
                     </main>
                 </div>
             </div>
