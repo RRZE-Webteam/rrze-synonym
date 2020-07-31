@@ -93,7 +93,7 @@ class Layout {
 
     public function orderByTitle( $wp_query ) {
         if ( $wp_query->is_main_query() ) {
-            $post_type = $wp_query->query['post_type'];
+            $post_type = (isset($wp_query->query['post_type']) ? $wp_query->query['post_type'] : '');
             if ( $post_type == 'synonym') {
                 if( ! isset($wp_query->query['orderby'])) {
                     $wp_query->set('orderby', 'title');
