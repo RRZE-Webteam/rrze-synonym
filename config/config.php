@@ -185,7 +185,7 @@ function getShortcodeSettings(){
 		'block' => [
             'blocktype' => 'rrze-synonym/synonym',
 			'blockname' => 'synonym',
-			'title' => 'RRZE Synonyms',
+			'title' => 'RRZE Synonym',
 			'category' => 'widgets',
             'icon' => 'translation',
             'show_block' => 'content',

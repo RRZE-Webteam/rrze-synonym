@@ -24,8 +24,8 @@ class Shortcode {
     public function __construct() {
         $this->settings = getShortcodeSettings();
         add_action( 'init',  [$this, 'initGutenberg'] );
-        add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ] ); // liefert Langform (custom field) entweder nach slug oder id
-        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
+        add_shortcode( 'synonym', [$this, 'shortcodeOutput'] ); // liefert Langform (custom field) entweder nach slug oder id
+        add_shortcode( 'fau_abbr', [$this, 'shortcodeOutput'] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
     }
 
 
@@ -73,7 +73,7 @@ class Shortcode {
             $myPosts = $this->getPostsByCPT( 'synonym' );
         }
 
-        if ( $shortcode_tag == '' ){
+        if ($gutenberg_shortcode_type){
             // Gutenberg
             $shortcode_tag = $gutenberg_shortcode_type;
         }
@@ -156,7 +156,7 @@ class Shortcode {
 
         $this->settings = $this->fillGutenbergOptions();
 
-        $js = '../assets/js/gutenberg.min.js';
+        $js = '../assets/js/gutenberg.js';
         $editor_script = $this->settings['block']['blockname'] . '-blockJS';
 
         wp_register_script(
@@ -173,12 +173,17 @@ class Shortcode {
         );
         wp_localize_script( $editor_script, 'blockname', $this->settings['block']['blockname'] );
 
-        $css = '../assets/css/gutenberg.min.css';
+        $css = '../assets/css/gutenberg.css';
         $editor_style = 'gutenberg-css';
         wp_register_style( $editor_style, plugins_url( $css, __FILE__ ) );
+
+        $theme_style = 'theme-css';
+        wp_register_style($theme_style, get_template_directory_uri() . '/style.css', array('wp-editor'), null);
+
         register_block_type( $this->settings['block']['blocktype'], array(
             'editor_script' => $editor_script,
-            'style' => $editor_style,
+            'editor_style' => $editor_style,
+            'style' => $theme_style,
             'render_callback' => [$this, 'shortcodeOutput'],
             'attributes' => $this->settings
             ) 
