@@ -131,10 +131,13 @@ class Shortcode {
 
         $this->settings['id']['field_type'] = 'select';
         $this->settings['id']['type'] = 'number';
-        $this->settings['id']['values'][0] = __( '-- all --', 'rrze-synonym' );
+        $this->settings['id']['values'][] = ['id' => 0, 'val' => __( '-- all --', 'rrze-synonym' )];
         $this->settings['id']['default'] = 0;
         foreach ( $synonyms as $synonym){
-            $this->settings['id']['values'][$synonym->ID] = str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) );
+            $this->settings['id']['values'][] = [
+                'id' => $synonym->ID,
+                'val' => str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) )
+            ];
         }
 
         return $this->settings;
@@ -157,7 +160,9 @@ class Shortcode {
         $this->settings = $this->fillGutenbergOptions();
 
         $js = '../assets/js/gutenberg.js';
-        $editor_script = $this->settings['block']['blockname'] . '-blockJS';
+        // $editor_script = $this->settings['block']['blockname'] . '-blockJS';
+        $editor_script = 'RRZE-Gutenberg';
+
 
         wp_register_script(
             $editor_script,
@@ -189,6 +194,6 @@ class Shortcode {
             ) 
         );
 
-        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', $this->settings );
+        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', json_decode(json_encode($this->settings), FALSE));
     }
 }
