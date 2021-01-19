@@ -116,8 +116,6 @@ class Shortcode {
 
 
     public function fillGutenbergOptions() {
-        $options = get_option( 'rrze-synonym' );
-
         // we don't need attribute "slug" in Gutenberg and can use "id" solely
         unset( $this->settings['slug'] );
 
@@ -157,16 +155,10 @@ class Shortcode {
             }
         }
 
-        $this->settings = $this->fillGutenbergOptions();
-
-        $js = '../assets/js/gutenberg.js';
-        // $editor_script = $this->settings['block']['blockname'] . '-blockJS';
-        $editor_script = 'RRZE-Gutenberg';
-
-
-        wp_register_script(
-            $editor_script,
-            plugins_url( $js, __FILE__ ),
+        // include gutenberg lib
+        wp_enqueue_script(
+            'RRZE-Gutenberg',
+            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',
@@ -174,17 +166,33 @@ class Shortcode {
                 'wp-components',
                 'wp-editor'
             ),
-            filemtime( dirname( __FILE__ ) . '/' . $js )
+            NULL
         );
-        wp_localize_script( $editor_script, 'blockname', $this->settings['block']['blockname'] );
 
-        $css = '../assets/css/gutenberg.css';
+        // get prefills for dropdowns
+        $this->settings = $this->fillGutenbergOptions();
+
+        // register js-script to inject php config to call gutenberg lib
+        $editor_script = $this->settings['block']['blockname'] . '-block';        
+        $js = '../assets/js/' . $editor_script . '.js';
+
+        wp_register_script(
+            $editor_script,
+            plugins_url( $js, __FILE__ ),
+            array(
+                'RRZE-Gutenberg',
+            ),
+            NULL
+        );
+        wp_localize_script( $editor_script, 'blockConfig', $this->settings );
+
+        // register styles
         $editor_style = 'gutenberg-css';
-        wp_register_style( $editor_style, plugins_url( $css, __FILE__ ) );
-
+        wp_register_style( $editor_style, plugins_url( '../assets/css/gutenberg.css', __FILE__ ) );
         $theme_style = 'theme-css';
         wp_register_style($theme_style, get_template_directory_uri() . '/style.css', array('wp-editor'), null);
 
+        // register block
         register_block_type( $this->settings['block']['blocktype'], array(
             'editor_script' => $editor_script,
             'editor_style' => $editor_style,
@@ -193,7 +201,5 @@ class Shortcode {
             'attributes' => $this->settings
             ) 
         );
-
-        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', json_decode(json_encode($this->settings), FALSE));
     }
 }
