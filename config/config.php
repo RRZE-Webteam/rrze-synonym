@@ -185,11 +185,10 @@ function getShortcodeSettings(){
 		'block' => [
             'blocktype' => 'rrze-synonym/synonym',
 			'blockname' => 'synonym',
-			'title' => 'RRZE Synonyms',
+			'title' => 'RRZE Synonym',
 			'category' => 'widgets',
             'icon' => 'translation',
-            'show_block' => 'content',
-			'message' => __( 'Find the settings on the right side', 'rrze-synonym' )
+            'show_block' => 'content'
 		],
 		'slug' => [
 			'default' => '',

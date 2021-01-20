@@ -7,9 +7,6 @@ use function RRZE\Synonym\Config\getShortcodeSettings;
 use RRZE\Synonym\API;
 
 
-
-$settings;
-
 /**
  * Shortcode
  */
@@ -24,8 +21,8 @@ class Shortcode {
     public function __construct() {
         $this->settings = getShortcodeSettings();
         add_action( 'init',  [$this, 'initGutenberg'] );
-        add_shortcode( 'synonym', [ $this, 'shortcodeOutput' ] ); // liefert Langform (custom field) entweder nach slug oder id
-        add_shortcode( 'fau_abbr', [ $this, 'shortcodeOutput' ] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
+        add_shortcode( 'synonym', [$this, 'shortcodeOutput'] ); // liefert Langform (custom field) entweder nach slug oder id
+        add_shortcode( 'fau_abbr', [$this, 'shortcodeOutput'] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
     }
 
 
@@ -73,7 +70,7 @@ class Shortcode {
             $myPosts = $this->getPostsByCPT( 'synonym' );
         }
 
-        if ( $shortcode_tag == '' ){
+        if ($gutenberg_shortcode_type){
             // Gutenberg
             $shortcode_tag = $gutenberg_shortcode_type;
         }
@@ -116,8 +113,6 @@ class Shortcode {
 
 
     public function fillGutenbergOptions() {
-        $options = get_option( 'rrze-synonym' );
-
         // we don't need attribute "slug" in Gutenberg and can use "id" solely
         unset( $this->settings['slug'] );
 
@@ -131,10 +126,13 @@ class Shortcode {
 
         $this->settings['id']['field_type'] = 'select';
         $this->settings['id']['type'] = 'number';
-        $this->settings['id']['values'][0] = __( '-- all --', 'rrze-synonym' );
+        $this->settings['id']['values'][] = ['id' => 0, 'val' => __( '-- all --', 'rrze-synonym' )];
         $this->settings['id']['default'] = 0;
         foreach ( $synonyms as $synonym){
-            $this->settings['id']['values'][$synonym->ID] = str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) );
+            $this->settings['id']['values'][] = [
+                'id' => $synonym->ID,
+                'val' => str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) )
+            ];
         }
 
         return $this->settings;
@@ -154,14 +152,10 @@ class Shortcode {
             }
         }
 
-        $this->settings = $this->fillGutenbergOptions();
-
-        $js = '../assets/js/gutenberg.min.js';
-        $editor_script = $this->settings['block']['blockname'] . '-blockJS';
-
-        wp_register_script(
-            $editor_script,
-            plugins_url( $js, __FILE__ ),
+        // include gutenberg lib
+        wp_enqueue_script(
+            'RRZE-Gutenberg',
+            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',
@@ -169,21 +163,40 @@ class Shortcode {
                 'wp-components',
                 'wp-editor'
             ),
-            filemtime( dirname( __FILE__ ) . '/' . $js )
+            NULL
         );
-        wp_localize_script( $editor_script, 'blockname', $this->settings['block']['blockname'] );
 
-        $css = '../assets/css/gutenberg.min.css';
+        // get prefills for dropdowns
+        $this->settings = $this->fillGutenbergOptions();
+
+        // register js-script to inject php config to call gutenberg lib
+        $editor_script = $this->settings['block']['blockname'] . '-block';        
+        $js = '../assets/js/' . $editor_script . '.js';
+
+        wp_register_script(
+            $editor_script,
+            plugins_url( $js, __FILE__ ),
+            array(
+                'RRZE-Gutenberg',
+            ),
+            NULL
+        );
+        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', $this->settings );
+
+        // register styles
         $editor_style = 'gutenberg-css';
-        wp_register_style( $editor_style, plugins_url( $css, __FILE__ ) );
+        wp_register_style( $editor_style, plugins_url( '../assets/css/gutenberg.css', __FILE__ ) );
+        $theme_style = 'theme-css';
+        wp_register_style($theme_style, get_template_directory_uri() . '/style.css', array('wp-editor'), null);
+
+        // register block
         register_block_type( $this->settings['block']['blocktype'], array(
             'editor_script' => $editor_script,
-            'style' => $editor_style,
+            'editor_style' => $editor_style,
+            'style' => $theme_style,
             'render_callback' => [$this, 'shortcodeOutput'],
             'attributes' => $this->settings
             ) 
         );
-
-        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', $this->settings );
     }
 }
