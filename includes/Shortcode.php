@@ -20,6 +20,7 @@ class Shortcode {
 
     public function __construct() {
         $this->settings = getShortcodeSettings();
+        add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
         add_shortcode( 'synonym', [$this, 'shortcodeOutput'] ); // liefert Langform (custom field) entweder nach slug oder id
         add_shortcode( 'fau_abbr', [$this, 'shortcodeOutput'] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
@@ -152,20 +153,6 @@ class Shortcode {
             }
         }
 
-        // include gutenberg lib
-        wp_enqueue_script(
-            'RRZE-Gutenberg',
-            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
-            array(
-                'wp-blocks',
-                'wp-i18n',
-                'wp-element',
-                'wp-components',
-                'wp-editor'
-            ),
-            NULL
-        );
-
         // get prefills for dropdowns
         $this->settings = $this->fillGutenbergOptions();
 
@@ -199,4 +186,25 @@ class Shortcode {
             ) 
         );
     }
+
+    public function enqueueGutenberg(){
+        if ( ! function_exists( 'register_block_type' ) ) {
+            return;        
+        }
+
+        // include gutenberg lib
+        wp_enqueue_script(
+            'RRZE-Gutenberg',
+            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
+            array(
+                'wp-blocks',
+                'wp-i18n',
+                'wp-element',
+                'wp-components',
+                'wp-editor'
+            ),
+            NULL
+        );
+    }
+
 }
