@@ -188,7 +188,7 @@ function getShortcodeSettings(){
 			'title' => 'RRZE Synonym',
 			'category' => 'widgets',
             'icon' => 'translation',
-            'show_block' => 'content'
+            'tinymce_icon' => 'translate',
 		],
 		'slug' => [
 			'default' => '',
