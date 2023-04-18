@@ -11,7 +11,12 @@ get_header();
 global $post;
 
 if ($bFAUTheme) {
-    get_template_part('template-parts/hero', 'small'); ?>
+    $currentTheme = wp_get_theme();		
+    $vers = $currentTheme->get( 'Version' );
+      if (version_compare($vers, "2.3", '<')) {      
+        get_template_part('template-parts/hero', 'small'); 
+      }
+?>
     <main id="content">
         <div class="container">
             <div class="row">
