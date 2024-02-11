@@ -4,7 +4,7 @@
 Plugin Name:     RRZE Synonym
 Plugin URI:      https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym
 Description:     Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu synchronisieren und mittels Shortcodes ([synonym ...] und [fau_abbr ...]) oder als Gutenberg Editor Block (Synonym oder Abkürzung = Dropdown) einzubinden.
-Version:         2.11.0
+Version:         3.0.0
 Requires at least: 6.1
 Requires PHP:      8.0
 Author:          RRZE Webteam
@@ -153,6 +153,10 @@ function deactivation() {
     flush_rewrite_rules();
 }
 
+function rrze_synonym_init() {
+	register_block_type( __DIR__ . '/build' );
+}
+
 /**
  * Wird durchgeführt, nachdem das WP-Grundsystem hochgefahren
  * und alle Plugins eingebunden wurden.
@@ -175,4 +179,7 @@ function loaded() {
         $main = new Main(__FILE__);
         $main->onLoaded();
     }
+
+    add_action( 'init', __NAMESPACE__ . '\rrze_synonym_init' );
+ 
 }
