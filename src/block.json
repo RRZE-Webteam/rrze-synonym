@@ -2,10 +2,10 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "create-block/rrze-synonym",
-	"version": "2.0.0",
-	"title": "RRZE synonym",
+	"version": "3.0.0",
+	"title": "Synonym RRZE",
 	"category": "widgets",
-	"description": "Display glossaries",
+	"description": "Display synonyms",
 	"icon": "translation",
 	"example": {},
 	"attributes": {

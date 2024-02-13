@@ -1,7 +1,7 @@
 {
 	"name": "rrze-synonym",
-	"version": "2.0.0",
-	"description": "Plugin, um Synonym-Einträge zu erstellen und mittels Shortcode oder als Block (Gutenberg Editor) einzubinden.",
+	"version": "3.0.0",
+	"description": "Plugin, um Synonyme zu erstellen und aus dem FAU-Netzwerk zu synchronisieren. Verwendbar als Shortcode oder Block.",
 	"author": "RRZE Webteam",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
