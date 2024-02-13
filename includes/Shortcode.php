@@ -18,8 +18,6 @@ class Shortcode {
     public function __construct() {
         $this->settings = getShortcodeSettings();
         $this->pluginname = $this->settings['block']['blockname'];
-        add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
-        add_action( 'init',  [$this, 'initGutenberg'] );
         add_shortcode( 'synonym', [$this, 'shortcodeOutput'] ); // liefert Langform (custom field) entweder nach slug oder id
         add_shortcode( 'fau_abbr', [$this, 'shortcodeOutput'] ); // liefert <abbr title=" synonym (custom field) " lang=" titleLang (custom field)" > title </abbr> nach slug oder id
         add_action('admin_head', [$this, 'setMCEConfig']);
@@ -112,91 +110,6 @@ class Shortcode {
         return $output;
     }
 
-    public function fillGutenbergOptions() {
-        // we don't need attribute "slug" in Gutenberg and can use "id" solely
-        unset( $this->settings['slug'] );
-
-        // fill select id ( = synonym )
-        $synonyms = get_posts( array(
-            'nopaging' => true,
-            'post_type' => 'synonym',
-            'orderby' => 'title',
-            'order' => 'ASC'
-        ));
-
-        $this->settings['id']['field_type'] = 'select';
-        $this->settings['id']['type'] = 'number';
-        $this->settings['id']['values'][] = ['id' => 0, 'val' => __( '-- all --', 'rrze-synonym' )];
-        $this->settings['id']['default'] = 0;
-        foreach ( $synonyms as $synonym){
-            $this->settings['id']['values'][] = [
-                'id' => $synonym->ID,
-                'val' => str_replace( "'", "", str_replace( '"', "", $synonym->post_title ) )
-            ];
-        }
-
-        return $this->settings;
-    }
-
-    public function isGutenberg(){
-        $postID = get_the_ID();
-        if ($postID && !use_block_editor_for_post($postID)){
-            return false;
-        }
-
-        return true;        
-    }
-
-    public function initGutenberg() {
-        if (! $this->isGutenberg()){
-            return;
-        }
-
-        // get prefills for dropdowns
-        $this->settings = $this->fillGutenbergOptions();
-
-        // register js-script to inject php config to call gutenberg lib
-        $editor_script = $this->settings['block']['blockname'] . '-block';        
-        $js = '../assets/js/' . $editor_script . '.js';
-
-        wp_register_script(
-            $editor_script,
-            plugins_url( $js, __FILE__ ),
-            array(
-                'RRZE-Gutenberg',
-            ),
-            NULL
-        );
-        wp_localize_script( $editor_script, $this->settings['block']['blockname'] . 'Config', $this->settings );
-
-        // register block
-        register_block_type( $this->settings['block']['blocktype'], array(
-            'editor_script' => $editor_script,
-            'render_callback' => [$this, 'shortcodeOutput'],
-            'attributes' => $this->settings
-            ) 
-        );
-    }
-
-    public function enqueueGutenberg(){
-        if (! $this->isGutenberg()){
-            return;
-        }
-
-        // include gutenberg lib
-        wp_enqueue_script(
-            'RRZE-Gutenberg',
-            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
-            array(
-                'wp-blocks',
-                'wp-i18n',
-                'wp-element',
-                'wp-components',
-                'wp-editor'
-            ),
-            NULL
-        );
-    }
 
     public function setMCEConfig(){
         $shortcode = '';

@@ -6,6 +6,7 @@
 	"title": "RRZE synonym",
 	"category": "widgets",
 	"description": "Display glossaries",
+	"icon": "translation",
 	"example": {},
 	"attributes": {
 		"register": {
