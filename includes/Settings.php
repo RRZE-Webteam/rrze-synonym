@@ -79,6 +79,14 @@ class Settings {
     protected $domains = array();
    
     /**
+     * Optionsseite
+     * @var string
+     */
+    protected $optionsPage;
+
+
+
+    /**
      * Variablen Werte zuweisen.
      * @param string $pluginFile [description]
      */

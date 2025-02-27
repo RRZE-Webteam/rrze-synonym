@@ -2,9 +2,9 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "create-block/rrze-synonym",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "title": "Synonym RRZE",
-  "category": "widgets",
+  "category": "rrze",
   "description": "Display synonyms",
   "icon": "translation",
   "example": {},
@@ -56,14 +56,7 @@
     }
   },
   "supports": {
-    "color": {
-      "background": false,
-      "text": true
-    },
-    "html": false,
-    "typography": {
-      "fontSize": true
-    }
+    "html": false
   },
   "textdomain": "rrze-synonym",
   "editorScript": "file:./index.js",
