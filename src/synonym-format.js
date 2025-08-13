@@ -1,11 +1,11 @@
-// synonym-format.js
+// synonym-format.js — pick from CPT "synonym" and apply <abbr>
 import { __ } from '@wordpress/i18n';
 import {
 	registerFormatType,
-	toggleFormat,
 	applyFormat,
 	removeFormat,
 	getActiveFormat,
+	insert,
 } from '@wordpress/rich-text';
 import {
 	RichTextToolbarButton,
@@ -13,13 +13,15 @@ import {
 } from '@wordpress/block-editor';
 import {
 	Popover,
-	TextControl,
-	SelectControl,
+	ComboboxControl,
 	Button,
 	Flex,
 	FlexItem,
+	Spinner,
+	Notice,
 } from '@wordpress/components';
-import { useState, useRef } from '@wordpress/element';
+import { useState, useRef, useEffect, useMemo } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 const FORMAT_NAME = 'rrze/synonym';
 const TAG_NAME = 'abbr';
@@ -28,43 +30,96 @@ const CLASS_NAME = 'rrze-syn';
 const SynonymUI = ( props ) => {
 	const { value, onChange, isActive } = props;
 
-	// Active format instance (if the cursor is already inside an <abbr>)
-	const current = getActiveFormat( value, FORMAT_NAME );
-	const currentAttrs = ( current && current.attributes ) || {};
+	const [items, setItems] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-	const [ title, setTitle ] = useState( currentAttrs.title || '' );
-	const [ lang, setLang ] = useState( currentAttrs.lang || '' );
-	const [ pron, setPron ] = useState( currentAttrs['data-pron'] || '' );
-	const [ isOpen, setIsOpen ] = useState( false );
+	// Fetch all synonyms via REST (uses pagination).
+	useEffect(() => {
+		let cancelled = false;
+
+		async function loadAll() {
+			setLoading(true);
+			setError(null);
+			const perPage = 100; // WP REST default max
+			let page = 1;
+			const out = [];
+
+			try {
+				while (true) {
+					const batch = await apiFetch({
+						path: `/wp/v2/synonym?status=publish&per_page=${perPage}&page=${page}&orderby=title&order=asc&_fields=id,title,synonym,titleLang,meta`,
+					});
+					if (cancelled) return;
+
+					out.push(...batch);
+					if (batch.length < perPage) break;
+					page++;
+				}
+				setItems(out);
+			} catch (e) {
+				if (!cancelled) setError(e);
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		}
+
+		loadAll();
+		return () => { cancelled = true; };
+	}, []);
+
+	// Build options: short = post title, long/lang from top-level REST fields (fallback: meta).
+	const options = useMemo(() => {
+		return (items || []).map(post => ({
+			value: String(post.id),
+			label: post?.title?.rendered || __('(no title)','rrze-synonym'),
+			long:  post?.synonym ?? post?.meta?.synonym ?? '',
+			lang:  post?.titleLang ?? post?.meta?.titleLang ?? '',
+		}));
+	}, [items]);
+
+	const [ isOpen, setIsOpen ] = useState(false);
+	const [ selectedId, setSelectedId ] = useState('');
 	const anchorRef = useRef();
 
-	const LANG_OPTIONS = [
-		{ label: __('— none —','rrze-synonym'), value: '' },
-		{ label: __('German','rrze-synonym'), value: 'de' },
-		{ label: __('English','rrze-synonym'), value: 'en' },
-		{ label: __('French','rrze-synonym'), value: 'fr' },
-		{ label: __('Spanish','rrze-synonym'), value: 'es' },
-		{ label: __('Russian','rrze-synonym'), value: 'ru' },
-		{ label: __('Chinese','rrze-synonym'), value: 'zh' },
-	];
+	// If the cursor sits in an existing <abbr>, we allow "Remove" / "Update"
+	const current = getActiveFormat( value, FORMAT_NAME );
 
-	const apply = () => {
-		const attrs = { title: title || undefined };
-		if ( lang ) attrs.lang = lang;
-		if ( pron ) attrs['data-pron'] = pron;
+	const applyFromSelected = () => {
+		if ( !selectedId ) return;
 
-		onChange(
-			applyFormat( value, {
-				type: FORMAT_NAME,
-				attributes: attrs,
-			} )
-		);
-		setIsOpen( false );
+		const picked = options.find( o => o.value === selectedId );
+		if ( !picked ) return;
+
+		const attrs = {};
+		if ( picked.long ) attrs.title = picked.long;
+		if ( picked.lang ) attrs.lang = picked.lang;
+
+		let v = value;
+		const hasSelection = v.start !== v.end;
+
+		// If there is no selection, insert the short label and then wrap it
+		if ( !hasSelection ) {
+			const shortText = picked.label || '';
+			if ( shortText ) {
+				const beforeLen = v.text.length;
+				v = insert( v, shortText );
+				const afterLen = v.text.length;
+				const insertedLen = afterLen - beforeLen;
+				// select the inserted text
+				v = { ...v, start: v.end - insertedLen, end: v.end };
+			}
+		}
+
+		v = applyFormat( v, { type: FORMAT_NAME, attributes: attrs } );
+		onChange( v );
+		setIsOpen(false);
+		setSelectedId('');
 	};
 
-	const remove = () => {
+	const removeFormatHere = () => {
 		onChange( removeFormat( value, FORMAT_NAME ) );
-		setIsOpen( false );
+		setIsOpen(false);
 	};
 
 	return (
@@ -76,7 +131,7 @@ const SynonymUI = ( props ) => {
 			/>
 			<span ref={ anchorRef }>
 				<RichTextToolbarButton
-					icon="admin-site"
+					icon="translation"
 					title={ __('Synonym/Acronym','rrze-synonym') }
 					onClick={ () => setIsOpen( (o) => !o ) }
 					isActive={ isActive }
@@ -89,37 +144,45 @@ const SynonymUI = ( props ) => {
 					variant="toolbar"
 					onClose={ () => setIsOpen( false ) }
 				>
-					<div style={{ padding: 12, maxWidth: 320 }}>
-						<TextControl
-							label={ __('Long form (title attribute)','rrze-synonym') }
-							value={ title }
-							onChange={ setTitle }
-							placeholder="Universal Resource Locator"
-						/>
-						<SelectControl
-							label={ __('Language (lang)','rrze-synonym') }
-							value={ lang }
-							onChange={ setLang }
-							options={ LANG_OPTIONS }
-						/>
-						<TextControl
-							label={ __('Pronunciation (optional)','rrze-synonym') }
-							help={ __('Phonetic note, stored as data-pron','rrze-synonym') }
-							value={ pron }
-							onChange={ setPron }
-							placeholder="you-are-ell"
-						/>
+					<div style={{ padding: 12, width: 360, maxWidth: '90vw' }}>
+						{ loading && (
+							<Flex align="center" gap={8}>
+								<Spinner />
+								<span>{ __('Loading synonyms…','rrze-synonym') }</span>
+							</Flex>
+						) }
+
+						{ (!loading && error) && (
+							<Notice status="error" isDismissible={ false }>
+								{ __('Failed to load synonyms. Check your REST setup.','rrze-synonym') }
+							</Notice>
+						) }
+
+						{ (!loading && !error) && (
+							<ComboboxControl
+								label={ __('Choose a synonym','rrze-synonym') }
+								help={ __('Type to search by title','rrze-synonym') }
+								value={ selectedId }
+								onChange={ setSelectedId }
+								options={ options }
+							/>
+						) }
+
 						<Flex style={{ marginTop: 10 }} justify="flex-end" gap={ 8 }>
-							{ isActive && (
+							{ !!current && (
 								<FlexItem>
-									<Button variant="secondary" onClick={ remove }>
+									<Button variant="secondary" onClick={ removeFormatHere }>
 										{ __('Remove','rrze-synonym') }
 									</Button>
 								</FlexItem>
 							) }
 							<FlexItem>
-								<Button variant="primary" onClick={ apply }>
-									{ isActive ? __('Update','rrze-synonym') : __('Apply','rrze-synonym') }
+								<Button
+									variant="primary"
+									onClick={ applyFromSelected }
+									disabled={ !selectedId }
+								>
+									{ !!current ? __('Update','rrze-synonym') : __('Apply','rrze-synonym') }
 								</Button>
 							</FlexItem>
 						</Flex>
@@ -130,7 +193,7 @@ const SynonymUI = ( props ) => {
 	);
 };
 
-// Register the format: generates <abbr class="rrze-syn" ...>URL</abbr>
+// Register the format: renders <abbr class="rrze-syn" ...>…</abbr>
 registerFormatType( FORMAT_NAME, {
 	title: __('Synonym/Acronym','rrze-synonym'),
 	tagName: TAG_NAME,
@@ -138,7 +201,7 @@ registerFormatType( FORMAT_NAME, {
 	attributes: {
 		title: 'title',
 		lang: 'lang',
-		'data-pron': 'data-pron',
+		'data-pron': 'data-pron', // reserved for future use: pronounciation 
 	},
 	edit: SynonymUI,
 } );
