@@ -1,3 +1,13 @@
+**⚠️ Important Notice (Code Freeze)**
+> 
+> Starting with version **3.0.3**, this plugin is no longer maintained.  
+> All functionality has been merged into the new WordPress plugin **RRZE-Answers**.  
+> Please submit any new issues related to RRZE-Synonym v3.0.3 in the [RRZE-Answers repository](https://github.com/RRZE-Webteam/rrze-answers/issues/)).
+>
+> 
+
+
+
 # RRZE-Synonym
 WordPress-Plugin, um Synonyme zu erstellen, von Websites aus dem FAU-Netzwerk zu synchronisieren und mittels Shortcodes ([synonym ...] und [fau_abbr ...]) oder als Gutenberg Editor Block (Synonym oder Abkürzung = Dropdown) einzubinden.
 
