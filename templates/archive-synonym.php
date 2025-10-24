@@ -22,14 +22,10 @@ if ($bFAUTheme) {
                     <main id="droppoint">
                         <h1 class="screen-reader-text"><?php echo __('Index','fau'); ?></h1>
 <?php } else { ?>
-    <div id="sidebar" class="sidebar">
-        <?php get_sidebar(); ?>
-    </div>
-    <div id="primary" class="content-area">
-		<main id="main" class="site-main">
+		<main id="main" class="rrze-synonym">
 <?php }
 
-echo '<h2>'. __('Synonyms','rrze-synonym') . '</h2>';
+echo '<h1>'. __('Synonyms','rrze-synonym') . '</h1>';
 if (have_posts()) {
     echo '<table class="synonym">';
     while ( have_posts() ){
@@ -50,7 +46,7 @@ if ($bFAUTheme) { ?>
     </div>
 <?php } else { ?>
         </main>
-    </div>
+
 <?php }
 get_footer();
 
