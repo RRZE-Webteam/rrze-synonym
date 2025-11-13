@@ -1,6 +1,6 @@
 {
 	"name": "rrze-synonym",
-	"version": "3.0.3",
+	"version": "3.0.6",
 	"description": "Plugin, um Synonyme zu erstellen und aus dem FAU-Netzwerk zu synchronisieren. Verwendbar als Shortcode oder Block.",
 	"author": "RRZE Webteam",
 	"license": "GPL-2.0-or-later",
@@ -8,7 +8,6 @@
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php",
 		"format": "wp-scripts format",
-		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",

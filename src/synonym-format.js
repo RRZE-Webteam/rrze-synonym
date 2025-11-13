@@ -197,7 +197,7 @@ const SynonymUI = ( props ) => {
 registerFormatType( FORMAT_NAME, {
 	title: __('Synonym/Acronym','rrze-synonym'),
 	tagName: TAG_NAME,
-	className: CLASS_NAME,
+	className: 'rrze-synonym',
 	attributes: {
 		title: 'title',
 		lang: 'lang',
