@@ -1,3 +1,4 @@
+
 [![Aktuelle Version](https://img.shields.io/github/package-json/v/rrze-webteam/rrze-synonym/main?label=Version)](https://github.com/RRZE-Webteam/rrze-synonym)
 [![Release Version](https://img.shields.io/github/v/release/rrze-webteam/rrze-synonym?label=Release+Version)](https://github.com/rrze-webteam/rrze-synonym/releases/)
 [![GitHub License](https://img.shields.io/github/license/rrze-webteam/rrze-synonym)](https://github.com/RRZE-Webteam/rrze-synonym)
@@ -9,7 +10,7 @@
 > All functionality has been merged into the new WordPress plugin **RRZE-Answers**.  
 > Please submit any new issues related to RRZE-Synonym v3.0.3 in the [RRZE-Answers repository](https://github.com/RRZE-Webteam/rrze-answers/issues/)).
 >
-> 
+
 
 # RRZE Synonym
 
