@@ -83,7 +83,7 @@ class Shortcode {
                         $output = '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. html_entity_decode( $post->post_title ) . '</abbr>';
                     }else{
                         foreach( $myPosts as $post ){
-                            $output .= '<div class="fau_abbr">';
+                            $output .= '<div class="rrze-synonym">';
                             $output .= '<abbr title="' . get_post_meta( $post->ID, 'synonym', TRUE ) . '" lang="' . get_post_meta( $post->ID, 'titleLang', TRUE ) . '">'. html_entity_decode( $post->post_title ) . '</abbr>';
                             $output .= '</div>';
                         }
@@ -95,8 +95,8 @@ class Shortcode {
                         $output = get_post_meta( $post->ID, 'synonym', TRUE );
                     }else{
                         foreach( $myPosts as $post ){
-                            $output .= '<div class="synonym">';
-                            $output .= '<h2 class="small">' . html_entity_decode( $post->post_title ) . '</h2>';
+                            $output .= '<div class="rrze-synonym">';
+                            $output .= '<h2>' . html_entity_decode( $post->post_title ) . '</h2>';
                             $output .= '<p>' . get_post_meta( $post->ID, 'synonym', TRUE ) . '</p>';
                             $output .= '<div>';
                         }

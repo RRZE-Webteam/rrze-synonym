@@ -12,10 +12,6 @@ global $post;
 
 if ($bFAUTheme) {
     $currentTheme = wp_get_theme();		
-    $vers = $currentTheme->get( 'Version' );
-      if (version_compare($vers, "2.3", '<')) {      
-        get_template_part('template-parts/hero', 'small'); 
-      }
 ?>
     <main id="content">
         <div class="container">
@@ -28,13 +24,19 @@ if ($bFAUTheme) {
 		<main id="main" class="rrze-synonym">
             
 <?php }
+    $langattr = '';
+    $lang = get_post_meta(get_the_ID(), 'titleLang', TRUE);
+    if (!empty($lang)) {
+        $langattr = ' lang="'.$lang.'"';
+    }
 
-echo '<div id="post-' . get_the_ID() . '" class="' . implode(' ', get_post_class()) .'">';
-echo '<h1>' . $post->post_title . '</h1>';
-echo '<p>';
-echo get_post_meta( $post->ID, 'synonym', TRUE ) . Layout::getPronunciation($post->ID);
-echo '</p>';
-echo '</div>';
+
+    echo '<div id="post-' . get_the_ID() . '" class="' . implode(' ', get_post_class()) .'"'.$langattr.'>';
+    echo '<h1>' . $post->post_title . '</h1>';
+    echo '<p>';
+    echo get_post_meta( $post->ID, 'synonym', TRUE ) ;
+    echo '</p>';
+    echo '</div>';
 
 if ($bFAUTheme) { ?>
                     </main>
