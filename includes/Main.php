@@ -160,8 +160,6 @@ class Main
 
     public function setSynonymCronjob()
     {
-        date_default_timezone_set('Europe/Berlin');
-
         $options = get_option('rrze-synonym');
 
         if ($options['synonymsync_autosync'] != 'on') {

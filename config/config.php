@@ -222,8 +222,9 @@ function getShortcodeSettings(){
 }
 
 function logIt( $msg ){
-	date_default_timezone_set('Europe/Berlin');
-	$msg = date("Y-m-d H:i:s") . ' | ' . $msg;
+    $wp_tz = wp_timezone();
+    $dt = new \DateTime('now', $wp_tz);
+	$msg = $dt . ' | ' . $msg;
 	if ( file_exists( SYNONYMLOGFILE ) ){
 		$content = file_get_contents( SYNONYMLOGFILE );
 		$content = $msg . "\n" . $content;
