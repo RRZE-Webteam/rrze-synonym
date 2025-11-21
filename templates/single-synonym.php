@@ -13,7 +13,7 @@ global $post;
 if ($bFAUTheme) {
     $currentTheme = wp_get_theme();		
 ?>
-    <main id="content">
+    <div id="content">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
@@ -44,8 +44,7 @@ if ($bFAUTheme) { ?>
             </div>
         </div>
     </div>
-    <?php get_template_part('template-parts/footer', 'social');
-} else { ?>
+<?php } else { ?>
         </main>
 <?php }
 

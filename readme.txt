@@ -1,7 +1,7 @@
 === Plugin Name ===
 Plugin Name:     RRZE Synonym
 Plugin URI:      https://gitlab.rrze.fau.de/rrze-webteam/rrze-synonym
-Version:         3.0.6
+Version:         3.0.7
 Requires at least: 6.1
 Tested up to:	 6.8.3
 Requires PHP:    8.0
