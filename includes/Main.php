@@ -182,7 +182,7 @@ class Main
         wp_schedule_event($nextcron, $options['synonymsync_frequency'], 'rrze_synonym_auto_sync');
 
         $timestamp = wp_next_scheduled('rrze_synonym_auto_sync');
-        $message = __('Next automatically synchronization:', 'rrze-synonym') . ' ' . date('d.m.Y H:i:s', $timestamp);
+        $message = __('Next automatically synchronization:', 'rrze-synonym') . ' ' . wp_date('d.m.Y H:i:s', $timestamp);
         add_settings_error('AutoSyncComplete', 'autosynccomplete', $message, 'updated');
         settings_errors();
     }
